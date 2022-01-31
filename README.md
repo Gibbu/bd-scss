@@ -1,0 +1,1 @@
+Simple package to create themes using SCSS for BetterDiscord.
