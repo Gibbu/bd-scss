@@ -3,11 +3,10 @@
 import sade from 'sade';
 import path from 'path';
 import chokidar from 'chokidar';
-import findConfig from 'find-config'
 import compile from './compiler.js';
+import {config} from './utils.js'; 
 
-const config = JSON.parse(findConfig.read('bd-scss.config.json'));
-const prog = sade('betterdiscord-scss');
+const prog = sade('bd-scss');
 
 // Build script
 prog

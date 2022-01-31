@@ -1,6 +1,6 @@
 {
   "name": "bd-scss",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple package to create themes using SCSS for BetterDiscord.",
   "type": "module",
   "keywords": [
