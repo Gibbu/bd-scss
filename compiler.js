@@ -8,6 +8,24 @@ import sass from 'sass';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 
+if (!config) {
+	console.log(`\n${chalk.redBright.bold('[ERROR]')} Cannot find ${chalk.yellow('`bd-scss.config.json`')} in the root of your directory.\n`);
+	process.exit(1);
+}
+
+const {compiler, dev, build} = config;
+
+if (!compiler || !dev || !build) {
+	console.log(
+		`\n${chalk.redBright.bold('[ERROR]')} Your ${chalk.yellow('`bd-scss.config.json`')} file is missing one of the following:\n`
+		+ ` - ${chalk.yellow('"compiler"')}\n`
+		+ ` - ${chalk.yellow('"dev"')}\n`
+		+ ` - ${chalk.yellow('"build"')}\n\n`
+		+ `Make sure they are included.\n`
+	);
+	process.exit(1);
+}
+
 /**
  * Compile, autoprefix and save SCSS.
  * @param {Object} options
@@ -16,24 +34,6 @@ import autoprefixer from 'autoprefixer';
  * @return {Promise<void>}
  */
 export default async(options) => {
-	if (!config) {
-		console.log(`\n${chalk.redBright.bold('[ERROR]')} Cannot find ${chalk.yellow('`bd-scss.config.json`')} in the root of your directory.\n`);
-		process.exit(1);
-	}
-	
-	const {compiler, dev, build} = config;
-	
-	if (!compiler || !dev || !build) {
-		console.log(
-			`\n${chalk.redBright.bold('[ERROR]')} Your ${chalk.yellow('`bd-scss.config.json`')} file is missing one of the following:\n`
-			+ ` - ${chalk.yellow('"compiler"')}\n`
-			+ ` - ${chalk.yellow('"dev"')}\n`
-			+ ` - ${chalk.yellow('"build"')}\n\n`
-			+ `Make sure they are included.\n`
-		);
-		process.exit(1);
-	}
-
 	console.log(`\n${chalk.blueBright.bold('[BUILDING]')} ${chalk.yellow(`\`${options.target.join('/')}\``)} file...`);
 
 	// Check if path exists, if not make it.
