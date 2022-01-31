@@ -1,0 +1,32 @@
+{
+  "name": "bd-scss",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "keywords": [
+    "bd-scss",
+    "betterdiscord",
+    "sass",
+    "scss"
+  ],
+  "bin": {
+    "bd-scss": "bd-scss.js"
+  },
+  "author": {
+    "name": "Gibbu",
+    "url": "https://gibbu.me"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^10.4.2",
+    "chalk": "^5.0.0",
+    "chokidar": "^3.5.3",
+    "find-config": "^1.0.0",
+    "postcss": "^8.4.5",
+    "sade": "^1.8.1",
+    "sass": "^1.49.0"
+  }
+}
