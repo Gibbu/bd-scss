@@ -1,5 +1,5 @@
 # bd-scss
-Simple package to create themes using SCSS for BetterDiscord.
+Simple package to create themes for BetterDiscord using SCSS.
 
 ## Usage
 Install the package with:
@@ -32,6 +32,17 @@ Create a `bd-scss.config.json` file in the root of your project folder with the 
 }
 ```
 
+And then use the `bd-scss` command followed by the script you wish to use.
+```bash
+bd-scss dev # will run the dev script and build the bd-scss.config.json dev object.
+
+bd-scss build # will run the build script and build the bd-scss.config.json build object.
+```
+> the dev script can take a `--path` option to change the location of the BetterDiscord folder is located.
+
+<br>
+
+### `bd-scss.config.json` API
 | Property | Type | Description |
 | --- | --- | --- |
 | `compiler.prefix` | boolean | Run the CSS through the PostCSS autoprefixer. |
@@ -39,6 +50,14 @@ Create a `bd-scss.config.json` file in the root of your project folder with the 
 | `dev.output` | string | The file SCSS will compile to your BetterDiscord themes folder. |
 | `build.target` | string[] | The path and file the build script will compile from. <br>*Note: the last index **MUST** end in a file extension.* |
 | `build.output` | string[] | The location of the compiled CSS, relative to the project directory. <br>*Note: The compiler will auto create directories if not found.*
+
+- - -
+
+Need some examples? Check out these:
+- [DiscordStyles/SoftX](https://github.com/DiscordStyles/SoftX)
+- [DiscordStyles/Slate](https://github.com/DiscordStyles/Slate)
+
+- - -
 
 ## License
 
