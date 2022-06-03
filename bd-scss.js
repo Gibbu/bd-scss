@@ -26,7 +26,7 @@ prog
 	.option('--bdFolder', 'Change the output directory of the watcher')
 	.action(({bdFolder}) => {
 		const dataFolder = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME + "/.local/share");
-		let themesFolder = bdFolder || path.join(dataFolder, 'BetterDiscord', 'themes');
+		const themesFolder = bdFolder || path.join(dataFolder, 'BetterDiscord', 'themes');
 
 		chokidar
 			.watch('src', {persistent: true})

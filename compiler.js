@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 
-import {config} from './utils.js';
+import {config, constructMeta} from './utils.js';
 
 import sass from 'sass';
 import postcss from 'postcss';
@@ -13,11 +13,12 @@ if (!config) {
 	process.exit(1);
 }
 
-const {compiler, dev, build} = config;
+const {compiler, dev, build, meta} = config;
 
-if (!compiler || !dev || !build) {
+if (!compiler || !dev || !build || !meta) {
 	console.log(
 		`\n${chalk.redBright.bold('[ERROR]')} Your ${chalk.yellow('`bd-scss.config.json`')} file is missing one of the following:\n`
+		+ ` - ${chalk.yellow('"meta"')}\n`
 		+ ` - ${chalk.yellow('"compiler"')}\n`
 		+ ` - ${chalk.yellow('"dev"')}\n`
 		+ ` - ${chalk.yellow('"build"')}\n\n`
@@ -49,9 +50,13 @@ export default async(options) => {
 		CSS = res.css;
 	}
 
+	const META = constructMeta();
+
+	const themeFile = META + CSS.replace('@charset "UTF-8";\n', '');
+
 	// Write file to disk.
 	try {
-		fs.writeFileSync(typeof options.output === 'string' ? options.output : path.join(...options.output), CSS.replace('@charset "UTF-8";\n', ''));
+		fs.writeFileSync(typeof options.output === 'string' ? options.output : path.join(...options.output), themeFile);
 		console.log(`${chalk.greenBright.bold('[SUCCESS]')} Successfully built ${chalk.yellow(`\`${options.target.join('/')}\``)} to ${chalk.yellow(`\`${options.output.join('\\')}\``)}`);
 	} catch (error) {
 		console.log(chalk.redBright.bold('[ERROR]'),	error);
