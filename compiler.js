@@ -13,15 +13,16 @@ if (!config) {
 	process.exit(1);
 }
 
-const {compiler, dev, build, meta} = config;
+const {compiler, dist, dev, base, meta} = config;
 
-if (!compiler || !dev || !build || !meta) {
+if (!compiler || !dev || !dist || !base || !meta) {
 	console.log(
 		`\n${chalk.redBright.bold('[ERROR]')} Your ${chalk.yellow('`bd-scss.config.json`')} file is missing one of the following:\n`
 		+ ` - ${chalk.yellow('"meta"')}\n`
 		+ ` - ${chalk.yellow('"compiler"')}\n`
 		+ ` - ${chalk.yellow('"dev"')}\n`
 		+ ` - ${chalk.yellow('"build"')}\n\n`
+		+ ` - ${chalk.yellow('"base"')}\n\n`
 		+ `Make sure they are included.\n`
 	);
 	process.exit(1);
@@ -32,9 +33,10 @@ if (!compiler || !dev || !build || !meta) {
  * @param {Object} options
  * @param {string[]} options.target The path of the file to be compiled. Uses `path.join()`.
  * @param {string[]} options.output The destination and name of the file. Uses `path.join()`.
+ * @param {boolean} meta Tells the compiler to include the META at the top of the file.
  * @return {Promise<void>}
  */
-export default async(options) => {
+export default async(options, meta = false) => {
 	console.log(`\n${chalk.blueBright.bold('[BUILDING]')} ${chalk.yellow(`\`${options.target.join('/')}\``)} file...`);
 
 	// Check if path exists, if not make it.
@@ -42,7 +44,7 @@ export default async(options) => {
 	if (!fs.existsSync(!dirPath) && dirPath.length) fs.mkdirSync(dirPath, {recursive: true});
 
 	// Compile SCSS.
-	let CSS = sass.compile(path.join(...options.target)).css;
+	let CSS = sass.compile(path.join(...options.target)).css.replace('@charset "UTF-8";\n', '');
 
 	// PostCSS Autoprefixer.
 	if (compiler.prefix) {
@@ -50,13 +52,11 @@ export default async(options) => {
 		CSS = res.css;
 	}
 
-	const META = constructMeta();
-
-	const themeFile = META + CSS.replace('@charset "UTF-8";\n', '');
+	let generatedFile = meta ? constructMeta() + CSS : CSS;
 
 	// Write file to disk.
 	try {
-		fs.writeFileSync(typeof options.output === 'string' ? options.output : path.join(...options.output), themeFile);
+		fs.writeFileSync(typeof options.output === 'string' ? options.output : path.join(...options.output), generatedFile);
 		console.log(`${chalk.greenBright.bold('[SUCCESS]')} Successfully built ${chalk.yellow(`\`${options.target.join('/')}\``)} to ${chalk.yellow(`\`${options.output.join('\\')}\``)}`);
 	} catch (error) {
 		console.log(chalk.redBright.bold('[ERROR]'),	error);

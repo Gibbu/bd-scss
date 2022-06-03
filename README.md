@@ -13,53 +13,63 @@ yarn add bd-scss
 pnpm add bd-scss
 ```
 
-Create a `bd-scss.config.json` file in the root of your project folder with the following:
+Then create a `bd-scss.config.json` file in the root of your project folder with the following:
 ```json
 {
 	"meta": {
 		"name": "Cooltheme",
-		"author": "Me",
+		"author": "Gibbu",
 		"version": "1.0.0",
-		"description": "The best theme there is",
-		"source": "https://github.com"
+		"description": "My cool theme",
+		"source": "https://github.com/Gibbu/Cooltheme"
 	},
 	"compiler": {
 		"prefix": true
 	},
-	"dev": [
-		{
-			"target": ["src", "main.scss"],
-			"output": "Theme.theme.css"
-		}
-	],
-	"build": [
-		{
-			"target": ["src", "main.scss"],
-			"output": ["dist", "Theme.theme.css"]
-		}
-	]
+	"dist": {
+		"target": ["src", "dist.css"],
+		"output": ["dist", "Cooltheme.theme.css"]
+	},
+	"dev": {
+		"target": ["src", "dev.scss"],
+		"output": ["Cooltheme.theme.css"]
+	},
+	"base": {
+		"target": ["src", "base.scss"],
+		"output": ["dist", "Cooltheme.css"]
+	},
+	"addons": []
 }
 ```
 
 And then use the `bd-scss` command followed by the script you wish to use.
 ```bash
-bd-scss dev # will run the dev script and build the bd-scss.config.json dev object.
+bd-scss dev # will target the `dev` object.
 
-bd-scss build # will run the build script and build the bd-scss.config.json build object.
+bd-scss build # will run both `dist` and `base` objects. You shouldn't manually run this command. GitHub actions will.
 ```
 > the `dev` script can take a `--bdFolder` option to change the location of the BetterDiscord folder is located.
 
 <br>
 
+### Compiler API
+These properties are available on `dist`, `dev`, `base` objects and the `addons` object array.  
+**NOTE:** The last index of the array **MUST** have a file extension. If not the compiler will split the string and make a directory inside a directory and so on.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `target` | string[] | The targeted SCSS file. |
+| `output` | string[] | The location of the compiled SCSS file. |
+
 ### API
+
 | Property | Type | Description |
 | --- | --- | --- |
 | `meta` | Object | The BetterDiscord theme/plugin META. View all avaiable meta [HERE](https://github.com/BetterDiscord/BetterDiscord/wiki/Plugin-and-Theme-METAs) |
-| `compiler.prefix` | boolean | Run the CSS through the PostCSS autoprefixer. |
-| `dev.target` | string[] | The target of the dev script to watch and autocompile.<br>*Note: the last index **MUST** end in a file extension.* |
-| `dev.output` | string | The file SCSS will compile to your BetterDiscord themes folder. |
-| `build.target` | string[] | The path and file the build script will compile from. <br>*Note: the last index **MUST** end in a file extension.* |
-| `build.output` | string[] | The location of the compiled CSS, relative to the project directory. <br>*Note: The compiler will auto create directories if not found.*
+| `compiler.prefix` | boolean | Run the CSS through the PostCSS autoprefixer. (Recommended) |
+| `dev.output` | string[] | The file SCSS will compile to your BetterDiscord themes folder or the path given by the `--bdFolder` option. |
+| `main.output` | string[] | The location of the compiled CSS, relative to the project directory. |
+| `base.output` | string[] | The location of the compiled CSS, relative to the project directory. |
 
 <br>
 
