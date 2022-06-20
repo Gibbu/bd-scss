@@ -54,7 +54,13 @@ prog
 			process.exit(1);
 		}
 
-		const themesFolder = bdFolder || path.join(dataFolder, 'BetterDiscord', 'themes');
+		let themesFolder = bdFolder || path.join(dataFolder, "BetterDiscord");
+		// Makes sure that all folders go to the /themes folder
+        	themesFolder = path.join(themesFolder, "themes");
+		// If a user puts ~ it will change to the actual home folder
+        	if (themesFolder[0] == "~") {
+            		themesFolder = process.env.HOME + themesFolder.substring(1);
+        	}
 
 		if (!fs.existsSync(themesFolder)) {
 			console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + themesFolder + '`'));

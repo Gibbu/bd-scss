@@ -57,7 +57,7 @@ export default async(options, meta = false) => {
 	// Write file to disk.
 	try {
 		fs.writeFileSync(typeof options.output === 'string' ? options.output : path.join(...options.output), generatedFile);
-		console.log(`${chalk.greenBright.bold('[SUCCESS]')} Successfully built ${chalk.yellow(`\`${options.target.join('/')}\``)} to ${chalk.yellow(`\`${options.output.join('\\')}\``)}`);
+		console.log(`${chalk.greenBright.bold('[SUCCESS]')} Successfully built ${chalk.yellow(`\`${options.target.join('/')}\``)} to ${chalk.yellow(`\`${options.output.join(process.env.APPDATA ? "\\" : "/")}\``)}`);
 	} catch (error) {
 		console.log(chalk.redBright.bold('[ERROR]'),	error);
 	}
