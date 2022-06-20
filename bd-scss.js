@@ -6,7 +6,7 @@ import sade from 'sade';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
 import compile from './compiler.js';
-import {config} from './utils.js'; 
+import { config } from './utils.js';
 
 const prog = sade('bd-scss');
 
@@ -14,27 +14,28 @@ const prog = sade('bd-scss');
 prog
 	.command('build')
 	.describe('Compiles SCSS to CSS, with optional autoprefixer')
-	.action(async() => {
+	.action(async () => {
 		// Builds the .theme.css file for end users to download and install.
 		await compile({
 			target: config.dist.target,
-			output: config.dist.output
-		}, true);
+			output: config.dist.output,
+			meta: true,
+		});
 
 		// Builds the "base" .css file to be @import'd.
 		await compile({
 			target: config.base.target,
-			output: config.base.output
-		})
+			output: config.base.output,
+		});
 
 		// Builds any addons
 		if (config.addons && Array.isArray(config.addons) && config.addons.length > 0) {
-			config.addons.forEach(async(step) => {
+			config.addons.forEach(async (step) => {
 				await compile({
 					target: step.target,
-					output: step.output
-				})
-			})
+					output: step.output,
+				});
+			});
 		}
 	});
 
@@ -42,8 +43,8 @@ prog
 prog
 	.command('dev')
 	.describe('Watch the SRC folder for changes and autocompile them to the BetterDiscord themes folder')
-	.option('--bdFolder', 'Change the output directory.')
-	.action(({bdFolder}) => {
+	.option('--bdFolder', 'Change the output directory. NOTE: This will append a "themes" folder to your path.')
+	.action(({ bdFolder }) => {
 		let dataFolder;
 
 		if (process.platform === 'win32') dataFolder = process.env.APPDATA;
@@ -54,13 +55,10 @@ prog
 			process.exit(1);
 		}
 
-		let themesFolder = bdFolder || path.join(dataFolder, "BetterDiscord");
-		// Makes sure that all folders go to the /themes folder
-        	themesFolder = path.join(themesFolder, "themes");
-		// If a user puts ~ it will change to the actual home folder
-        	if (themesFolder[0] == "~") {
-            		themesFolder = process.env.HOME + themesFolder.substring(1);
-        	}
+		let themesFolder = bdFolder || path.join(dataFolder, 'BetterDiscord');
+		themesFolder = path.join(themesFolder, 'themes');
+
+		if (themesFolder[0] === '~') themesFolder = process.env.HOME + themesFolder.substring(1);
 
 		if (!fs.existsSync(themesFolder)) {
 			console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + themesFolder + '`'));
@@ -68,14 +66,15 @@ prog
 		}
 
 		chokidar
-			.watch('src', {persistent: true})
+			.watch('src', { usePolling: true })
 			.on('ready', () => console.log('Watching for changes...'))
-			.on('change', async() => {
+			.on('change', async () => {
 				await compile({
 					target: config.dev.target,
-					output: [themesFolder, ...config.dev.output]
-				}, true)
-			})
-	})
+					output: [themesFolder, ...config.dev.output],
+					meta: true,
+				});
+			});
+	});
 
 prog.parse(process.argv);
