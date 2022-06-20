@@ -41,7 +41,7 @@ export default async (options) => {
 
 	const osSlash = process.env.APPDATA ? '\\' : '/';
 
-	console.log(`\n${chalk.blueBright.bold('[BUILDING]')} ${chalk.yellow(`\`${options.target.join('/')}\``)} file...`);
+	console.log(`\n${chalk.blueBright.bold('[BUILDING]')} ${chalk.yellow(`\`${options.target.join(osSlash)}\``)} file...`);
 
 	// Check if path exists, if not make it.
 	const dirPath = options.output.filter((el) => !el.endsWith('.css')).join('/');
