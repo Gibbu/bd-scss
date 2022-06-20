@@ -52,7 +52,7 @@ export default async(options, meta = false) => {
 		CSS = res.css;
 	}
 
-	let generatedFile = meta ? constructMeta() + CSS : CSS;
+	const generatedFile = meta ? constructMeta() + CSS : CSS;
 
 	// Write file to disk.
 	try {

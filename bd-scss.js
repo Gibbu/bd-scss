@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-import sade from 'sade';
+import fs from 'fs';
 import path from 'path';
+import sade from 'sade';
 import chokidar from 'chokidar';
+import chalk from 'chalk';
 import compile from './compiler.js';
 import {config} from './utils.js'; 
 
@@ -40,10 +42,24 @@ prog
 prog
 	.command('dev')
 	.describe('Watch the SRC folder for changes and autocompile them to the BetterDiscord themes folder')
-	.option('--bdFolder', 'Change the output directory of the watcher')
+	.option('--bdFolder', 'Change the output directory.')
 	.action(({bdFolder}) => {
-		const dataFolder = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME + '/.local/share');
+		let dataFolder;
+
+		if (process.platform === 'win32') dataFolder = process.env.APPDATA;
+		else if (process.platform === 'darwin') dataFolder = path.join('Library', 'Application Support');
+		else if (process.platform === 'linux') dataFolder = path.join('.local', 'share');
+		else {
+			console.log(chalk.redBright.bold('[ERROR]') + ' Cannot determine your OS.');
+			process.exit(1);
+		}
+
 		const themesFolder = bdFolder || path.join(dataFolder, 'BetterDiscord', 'themes');
+
+		if (!fs.existsSync(themesFolder)) {
+			console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + themesFolder + '`'));
+			process.exit(1);
+		}
 
 		chokidar
 			.watch('src', {persistent: true})
