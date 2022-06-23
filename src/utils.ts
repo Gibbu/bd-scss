@@ -69,14 +69,14 @@ export const getDataFolder = async () => {
 
 	if (config.dev && Array.isArray(config.dev)) devPath = config.dev[1];
 
-	if (getOs() === 'WIN') folder = devPath || path.join(process.env.APPDATA!, 'BetterDiscord');
-	else if (getOs() === 'MACOS') folder = devPath || path.join(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord');
-	else if (getOs() === 'LINUX') folder = devPath || path.join(process.env.HOME!, '.local', 'share', 'BetterDiscord');
+	if (getOs() === 'WIN') folder = devPath || path.join(process.env.APPDATA!, 'BetterDiscord', 'themes');
+	else if (getOs() === 'MACOS') folder = devPath || path.join(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
+	else if (getOs() === 'LINUX') folder = devPath || path.join(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
 	else {
 		throw new Error('Cannot determine your OS.');
 	}
 
-	return path.join(folder, 'themes');
+	return path.join(folder);
 };
 
 /**
