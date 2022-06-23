@@ -6,7 +6,7 @@ import chokidar from 'chokidar';
 import chalk from 'chalk';
 
 import compile from './compiler.js';
-import { getConfig, getPaths, getDataFolder } from './utils.js';
+import { getConfig, getDataFolder } from './utils.js';
 import { DEFAULTS } from './defaults.js';
 
 const config = await getConfig();
@@ -17,30 +17,25 @@ prog
 	.command('build')
 	.describe('Compiles the `dist` and `base` config objects.')
 	.action(async () => {
-		const distPaths = getPaths(config.dist);
-		const basePaths = getPaths(config.base);
-
 		// Bullds the .theme.css file for end users to download and install.
 		await compile({
-			target: distPaths?.target || DEFAULTS.dist[0].split('/'),
-			output: distPaths?.output || DEFAULTS.dist[1].split('/'),
+			target: (config.dist?.target || DEFAULTS.dist.target).split('/'),
+			output: (config.dist?.output || DEFAULTS.dist.output).split('/'),
 			dist: true,
 		});
 
 		// Builds the "base" .css file to be @import'd
 		await compile({
-			target: basePaths?.target || DEFAULTS.base[0].split('/'),
-			output: basePaths?.output || DEFAULTS.base[1].split('/'),
+			target: (config.base?.target || DEFAULTS.base.target).split('/'),
+			output: (config.base?.output || DEFAULTS.base.output).split('/'),
 		});
 
 		// Builds and addons
 		if (config.addons && Array.isArray(config.addons) && config.addons.length > 0) {
 			config.addons.forEach(async (addon) => {
-				const addonPath = getPaths(addon)!;
-
 				await compile({
-					target: addonPath?.target,
-					output: addonPath?.output,
+					target: addon[0].split('/'),
+					output: addon[1].split('/'),
 				});
 			});
 		}
@@ -66,7 +61,7 @@ prog
 			})
 			.on('change', async () => {
 				await compile({
-					target: getPaths(config.dev)?.target || DEFAULTS.dev[0].split('/'),
+					target: (config.dev?.target || DEFAULTS.dev.target).split('/'),
 					output: dataFolder.split('/'),
 					dev: true,
 				});

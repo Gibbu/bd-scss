@@ -45,21 +45,18 @@ bd-scss build # will build the necessary files to distribute your theme.
 
 ## Compiler API
 
-| Property     | Type                         | Required | Description                                                                                                                                    |
-| ------------ | ---------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `meta`       | Object                       | true     | The BetterDiscord theme/plugin META. View all avaiable meta [HERE](https://github.com/BetterDiscord/BetterDiscord/wiki/Plugin-and-Theme-METAs) |
-| `dev`        | (string \| [string, string]) | false    | The target path of the dev file.                                                                                                               |
-| `dist`       | (string \| [string, string]) | false    | The output path of the dist file, relative to the current working directory.                                                                   |
-| `base`       | (string \| [string, string]) | false    | The output path of the base file, relative to the current working directory.                                                                   |
-| `fileName`   | string                       | false    | The name of the file to be compiled. This will default to your `meta.name` if this option is not provided.                                     |
-| `addons`     | ([string, string])[]         | false    | Any addons that should be compiled separately from your theme files.                                                                           |
-| `baseImport` | string                       | false    | The `@import` url used in the .theme.css file.                                                                                                 |
+| Property     | Type                 | Required | Description                                                                                                                                    |
+| ------------ | -------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `meta`       | Object               | true     | The BetterDiscord theme/plugin META. View all avaiable meta [HERE](https://github.com/BetterDiscord/BetterDiscord/wiki/Plugin-and-Theme-METAs) |
+| `dev`        | Object               | false    | The target and output path of the dev file.                                                                                                    |
+| `dist`       | Object               | false    | The target and output path of the dist file.                                                                                                   |
+| `base`       | Object               | false    | The target and output path of the base file.                                                                                                   |
+| `fileName`   | string               | false    | The name of the file to be compiled. This will default to your `meta.name` if this option is not provided.                                     |
+| `addons`     | ([string, string])[] | false    | Any addons that should be compiled separately from your theme files.                                                                           |
+| `baseImport` | string               | false    | The `@import` url used in the .theme.css file.                                                                                                 |
 
-Providing a string with the `dist` and `base` options will change the **OUTPUT** path.  
-While providing a string with the `dev` option will change the **TARGET** file.
-
-You can overwrite all with an array. The 1st index being the target file and the 2nd being the output path.  
-However the `dev` output is an absolute path. So you must provide the full path.
+All `dev`, `dist`, and `base` objects contain a `target` and `output` properties, and are relative to the project directory.  
+Execpt of the `dev.output`, that is an absolute path allowing you to change the location of the BetterDiscord themes folder.
 
 > Example: `C:\Users\Gibbu\AppData\Roaming\BetterDiscord\themes`
 

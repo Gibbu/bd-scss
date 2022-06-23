@@ -52,42 +52,59 @@ export interface Config {
 	};
 
 	/**
-	 * The output path of the dist file, relative to the current working directory.  
-	 * Leaving this blank will default to: `dist/[meta.name].theme.css`.
-	 *
-	 * Providing an array will allow you to change both the targeted file and the output path.  
-	 * Example: `['src/dist/index.scss', 'dist/theme']`.
+	 * The target path of the dist file.  
 	 * 
+	 * You can change either target or output by providing said objects.
 	 * 
-	 * Default: `['src/dist.scss', 'dist']`
+	 * @default
+	 * ```json
+	 * {
+	 * 	"target": "src/dist.scss",
+	 * 	"output": "dist"
+	 * }
+	 * ```
 	 */
-	dist?: string | [string, string];
+	dist?: {
+		target?: string;
+		output?: string;
+	};
 
 	/**
-	 * The output path of the base file, relative to the current working directory.  
-	 * Leaving this blank will default to: `dist/[meta.name].css`.
-	 *
-	 * Providing an array will allow you to change both the targeted file and the output path.  
-	 * Example: `['src/base/index.scss', 'dist/base']`.
+	 * The target path of the base file.  
 	 * 
+	 * You can change either target or output by providing said objects.
 	 * 
-	 * Default: `['src/base.scss', 'dist']`
+	 * @default
+	 * ```json
+	 * {
+	 * 	"target": "src/base.scss",
+	 * 	"output": "dist"
+	 * }
+	 * ```
 	 */
-	base?: string | [string, string];
+	base?: {
+		target?: string;
+		output?: string;
+	};
 
 	/**
-	 * The target path of the dev file.  
-	 *
-	 * Providing an array will allow you to change both the targeted file and the output path.  
+	 * The target path of the dist file.  
 	 * 
-	 * If for some reason your BetterDiscord isn't in the default location provided by this package,
-	 * simply change this to match your path.
+	 * You can change either target or output by providing said objects.  
+	 * The `output` **MUST** be an absolute path, as shown in the default.
 	 * 
-	 * Example: `['src/dev.scss', 'C:\Users\Gibbu\BetterDiscord']`
-	 * 
-	 * Default: `'src/dev.scss'`
+	 * @default 
+	 * ```json
+	 * {
+	 * 	"target": "src/dist.scss",
+	 * 	"output": "C:/Users/Gibbu/AppData/Roaming/BetterDiscord/themes"
+	 * }
+	 * ```
 	 */
-	dev?: string | [string, string];
+	dev?: {
+		target?: string;
+		output?: string;
+	};
 
 	/**
 	 * Any addons that should be compiled separately from your theme files.  

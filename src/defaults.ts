@@ -3,8 +3,17 @@ import { getConfig } from './utils.js';
 const config = await getConfig();
 
 export const DEFAULTS = {
-	dev: ['src/dev.scss', ''],
-	dist: ['src/dist.scss', 'dist'],
-	base: ['src/base.scss', 'dist'],
-	importUrl: config.baseImport || `https://${config.meta.author}.github.io/${config.meta.name}/${config.meta.name}.css`,
+	dev: {
+		target: 'src/dev.scss',
+		output: '',
+	},
+	dist: {
+		target: 'src/dist.scss',
+		output: 'dist',
+	},
+	base: {
+		target: 'src/base.scss',
+		output: 'dist',
+	},
+	importUrl: `https://${config.meta.author}.github.io/${config.meta.name}/${config.meta.name}.css`,
 };

@@ -4,24 +4,6 @@ import path from 'path';
 import type { Config } from './config.js';
 
 /**
- * Get the target and output paths of the given value.
- * @param val The path to be parsed.
- */
-export const getPaths = (val: string | [string, string] | undefined) => {
-	if (typeof val === 'undefined' || !val) return;
-
-	let path: { target: string[]; output: string[] } = { target: [], output: [] };
-
-	if (typeof val === 'string') path.target = val.split('/');
-	else {
-		path.target = val[0].split('/');
-		path.output = val[1].split('/');
-	}
-
-	return path;
-};
-
-/**
  * Get the current OS.
  */
 export const getOs = () => {
