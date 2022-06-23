@@ -15,6 +15,7 @@ interface Options {
 	output?: string[];
 	dist?: boolean;
 	dev?: boolean;
+	addon?: boolean;
 }
 
 const config = await getConfig();
@@ -30,11 +31,11 @@ if (missingMeta.length > 0) {
 	console.log(`${chalk.redBright('[ERROR]')} Your ${chalk.yellow('`meta`')} object is missing the following required properties:\n` + missingMeta.map((key) => ` - ${key}\n`).join(''));
 }
 
-export default async (options: Options = { target: [], output: [], dist: false, dev: false }) => {
-	const fileName = config.fileName || config.meta.name;
+export default async (options: Options = { target: [], output: [], dist: false, dev: false, addon: false }) => {
 	const startTime = performance.now();
 	const osSlash = getOs() === 'WIN' ? '\\' : '/';
 	const isTheme = options.dist || options.dev || false;
+	const fileName = !options.addon ? `${config.fileName || config.meta.name}${isTheme ? '.theme' : ''}.css` : options.output?.pop()!;
 
 	// Check if target file exists.
 	if (!fs.existsSync(path.join(...options.target!))) {
@@ -66,13 +67,13 @@ export default async (options: Options = { target: [], output: [], dist: false, 
 
 	// Write file to disk.
 	try {
-		fs.writeFileSync(path.join(...options.output!, `${fileName}${isTheme ? '.theme' : ''}.css`), generatedFile);
+		fs.writeFileSync(path.join(...options.output!, fileName), generatedFile);
 		console.log(
 			chalk.greenBright.bold('[SUCCESS]') +
 				' Successfully built ' +
 				chalk.yellow(`\`${options.target!.join(osSlash)}\``) +
 				' to ' +
-				chalk.yellow(`\`${options.output!.join(osSlash)}${osSlash}${fileName}${isTheme ? '.theme' : ''}.css\``) +
+				chalk.yellow(`\`${options.output!.join(osSlash)}${osSlash}${fileName}\``) +
 				' in ' +
 				chalk.cyanBright((endTime - startTime).toFixed() + 'ms')
 		);

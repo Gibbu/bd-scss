@@ -36,6 +36,7 @@ prog
 				await compile({
 					target: addon[0].split('/'),
 					output: addon[1].split('/'),
+					addon: true,
 				});
 			});
 		}
