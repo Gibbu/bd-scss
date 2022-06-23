@@ -1,6 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/find-config': ^1.0.1
+  '@types/node': ^18.0.0
   autoprefixer: ^10.4.2
   chalk: ^5.0.0
   chokidar: ^3.5.3
@@ -8,6 +10,7 @@ specifiers:
   postcss: ^8.4.5
   sade: ^1.8.1
   sass: ^1.49.0
+  typescript: ^4.7.4
 
 dependencies:
   autoprefixer: 10.4.2_postcss@8.4.5
@@ -18,7 +21,20 @@ dependencies:
   sade: 1.8.1
   sass: 1.49.0
 
+devDependencies:
+  '@types/find-config': 1.0.1
+  '@types/node': 18.0.0
+  typescript: 4.7.4
+
 packages:
+
+  /@types/find-config/1.0.1:
+    resolution: {integrity: sha512-H4DFIQMwxCKRgVWMSqALg6aowTOgZi5D4pSPBBuOQFJLRwfNZaByhC9+s870CZgTRJoyVg5J+iesdF5uvnJ0mA==}
+    dev: true
+
+  /@types/node/18.0.0:
+    resolution: {integrity: sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==}
+    dev: true
 
   /anymatch/3.1.2:
     resolution: {integrity: sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==}
@@ -249,6 +265,12 @@ packages:
     dependencies:
       is-number: 7.0.0
     dev: false
+
+  /typescript/4.7.4:
+    resolution: {integrity: sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
 
   /user-home/2.0.0:
     resolution: {integrity: sha1-nHC/2Babwdy/SGBODwS4tJzenp8=}
