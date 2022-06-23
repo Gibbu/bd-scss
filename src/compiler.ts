@@ -39,6 +39,7 @@ export default async (
 	const fileName = config.fileName || config.meta.name;
 	const startTime = performance.now();
 	const osSlash = getOs() === 'WIN' ? '\\' : '/';
+	const isTheme = options.dist || options.dev || false;
 
 	// Check if target file exists.
 	if (!fs.existsSync(path.join(...options.target))) {
@@ -60,7 +61,7 @@ export default async (
 
 	let generatedFile: string = '';
 
-	if (options.dist || options.dev) {
+	if (isTheme) {
 		generatedFile = await generateMeta();
 		if (options.dist) generatedFile += `@import url('${config.baseImport || DEFAULTS.importUrl}');\n\n`;
 	}
@@ -70,13 +71,13 @@ export default async (
 
 	// Write file to disk.
 	try {
-		fs.writeFileSync(path.join(...options.output, `${fileName}${options.dist ? '.theme' : ''}.css`), generatedFile);
+		fs.writeFileSync(path.join(...options.output, `${fileName}${isTheme ? '.theme' : ''}.css`), generatedFile);
 		console.log(
 			chalk.greenBright.bold('[SUCCESS]') +
 				' Successfully built ' +
 				chalk.yellow(`\`${options.target.join(osSlash)}\``) +
 				' to ' +
-				chalk.yellow(`\`${options.output.join(osSlash)}${osSlash}${fileName}${options.dist ? '.theme' : ''}.css\``) +
+				chalk.yellow(`\`${options.output.join(osSlash)}${osSlash}${fileName}${isTheme ? '.theme' : ''}.css\``) +
 				' in ' +
 				chalk.cyanBright((endTime - startTime).toFixed() + 'ms')
 		);
