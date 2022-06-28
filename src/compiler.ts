@@ -67,7 +67,7 @@ export default async (options: Options = { target: [], output: [], dist: false, 
 
 	// Write file to disk.
 	try {
-		fs.writeFileSync(path.join(...options.output!, fileName), generatedFile);
+		fs.writeFileSync(path.join(...options.output!, fileName.replace(/ /g, '')), generatedFile);
 		console.log(
 			chalk.greenBright.bold('[SUCCESS]') +
 				' Successfully built ' +
