@@ -56,7 +56,7 @@ export const getDataFolder = () => {
 	}
 
 	if (!fs.existsSync(getPath(folder))) {
-		console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + folder + '`'));
+		console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + getPath(folder) + '`'));
 		process.exit(1);
 	}
 
@@ -68,9 +68,8 @@ export const getDataFolder = () => {
 /**
  * Transforms the given value to an absolute path.
  */
-export const getPath = (val: string | string[]) => {
-	if (typeof val === 'string') return path.resolve(...val.split('/'));
-	return path.resolve(...val);
+export const getPath = (...val: string[]) => {
+	return path.resolve(...[...val].flat(42));
 };
 
 /**

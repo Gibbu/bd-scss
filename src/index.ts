@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
 import sade from 'sade';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
 
 import compile from './compiler.js';
-import { getConfig, getDataFolder, getPath } from './utils.js';
+import { getConfig, getPath } from './utils.js';
 import { DEFAULTS } from './defaults.js';
 
 const config = await getConfig();
