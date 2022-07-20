@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import path from 'path';
+import fs from 'fs';
 
 import type { Config } from './config.js';
 
@@ -41,24 +42,35 @@ export const generateMeta = async () => {
 };
 
 /**
- * Get the BetterDiscord data directory.
+ * Get the BetterDiscord directory.
  */
-export const getDataFolder = async () => {
-	const config = await getConfig();
-
+export const getDataFolder = () => {
 	let devPath: string | undefined;
 	let folder: string;
 
-	if (config.dev && Array.isArray(config.dev)) devPath = config.dev[1];
-
-	if (getOs() === 'WIN') folder = devPath || path.join(process.env.APPDATA!, 'BetterDiscord', 'themes');
-	else if (getOs() === 'MACOS') folder = devPath || path.join(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
-	else if (getOs() === 'LINUX') folder = devPath || path.join(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
+	if (getOs() === 'WIN') folder = devPath || path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
+	else if (getOs() === 'MACOS') folder = devPath || path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
+	else if (getOs() === 'LINUX') folder = devPath || path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
 	else {
 		throw new Error('Cannot determine your OS.');
 	}
 
-	return path.join(folder);
+	if (!fs.existsSync(getPath(folder))) {
+		console.log(chalk.redBright.bold('[ERROR]') + ' Directory does not exist: ' + chalk.yellow('`' + folder + '`'));
+		process.exit(1);
+	}
+
+	if (folder[0] === '~') folder = process.env.HOME! + folder.substring(1);
+
+	return folder;
+};
+
+/**
+ * Transforms the given value to an absolute path.
+ */
+export const getPath = (val: string | string[]) => {
+	if (typeof val === 'string') return path.resolve(...val.split('/'));
+	return path.resolve(...val);
 };
 
 /**

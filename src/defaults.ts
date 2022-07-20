@@ -1,11 +1,12 @@
-import { getConfig } from './utils.js';
+import { getConfig, getDataFolder } from './utils.js';
 
 const config = await getConfig();
+const dataFolder = getDataFolder();
 
 export const DEFAULTS = {
 	dev: {
 		target: 'src/dev.scss',
-		output: '',
+		output: dataFolder,
 	},
 	dist: {
 		target: 'src/dist.scss',
@@ -15,5 +16,5 @@ export const DEFAULTS = {
 		target: 'src/base.scss',
 		output: 'dist',
 	},
-	importUrl: `https://${config.meta.author}.github.io/${config.meta.name}/${config.meta.name}.css`,
+	baseImport: `https://${config.meta.author}.github.io/${config.meta.name}/${config.meta.name}.css`,
 };
