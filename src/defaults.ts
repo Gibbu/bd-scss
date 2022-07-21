@@ -16,5 +16,5 @@ export const DEFAULTS = {
 		target: 'src/base.scss',
 		output: 'dist',
 	},
-	baseImport: `https://${config.meta.author}.github.io/${config.meta.name}/${config.meta.name}.css`,
+	baseImport: `https://${config.meta.author.toLowerCase()}.github.io/${config.meta.name}/${config.meta.name}.css`,
 };

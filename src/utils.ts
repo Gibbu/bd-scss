@@ -47,6 +47,9 @@ export const generateMeta = async () => {
  * Get the BetterDiscord directory.
  */
 export const getDataFolder = () => {
+	// Fix GitHub trying to run and erroring out.
+	if (process.argv[2] === 'build') return 'dist';
+
 	let devPath: string | undefined;
 	let folder: string;
 
