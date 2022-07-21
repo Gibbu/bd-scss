@@ -14,6 +14,8 @@ export const getOs = () => {
 	return 'UNDEFINED';
 };
 
+export const getSlash = getOs() === 'WIN' ? '\\' : '/';
+
 /**
  * Find the `bd-scss.config.js` file of the current working directory.
  */

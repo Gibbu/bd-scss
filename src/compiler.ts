@@ -7,7 +7,7 @@ import sass from 'sass'; // Types are outdated :(
 import { Processor } from 'postcss';
 import autoprefixer from 'autoprefixer';
 
-import { getConfig, generateMeta, getMissingMeta, getPath } from './utils.js';
+import { getConfig, generateMeta, getMissingMeta, getSlash } from './utils.js';
 import { DEFAULTS } from './defaults.js';
 
 interface Options {
@@ -32,21 +32,21 @@ if (missingMeta.length > 0) {
 export default async (options: Options) => {
 	const startTime = performance.now();
 	const isTheme = options.mode === 'dist' || options.mode === 'dev' || false;
-	const fileName = options.mode !== 'addon' ? `${config.fileName || config.meta.name}${isTheme ? '.theme' : ''}.css` : options.output.split('/').pop()!;
+	const fileName = options.mode !== 'addon' ? `${config.fileName || config.meta.name}${isTheme ? '.theme' : ''}.css` : options.output.split(getSlash).pop()!;
+	const dirPath = options.output
+		.split(getSlash)
+		.filter((el) => !el.endsWith('.css'))
+		.join(getSlash);
 
-	// Check if target file exists.
-	if (!fs.existsSync(getPath(options.target))) {
-		console.log(`${chalk.redBright('[ERROR]')} Cannot find the target file: ${chalk.yellow('`' + getPath(options.target) + '`')}`);
+	// // Check if target file exists.
+	if (!fs.existsSync(options.target)) {
+		console.log(`${chalk.redBright('[ERROR]')} Cannot find the target file: ${chalk.yellow('`' + options.target + '`')}`);
 		process.exit(1);
 	}
 
 	console.log(`🔨 - Building ${chalk.yellow('`' + options.target + '`')} file...`);
 
 	// Check if path exists, if not make it.
-	const dirPath = options.output
-		.split('/')
-		.filter((el) => !el.endsWith('.css'))
-		.join('/');
 	if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 
 	// Compile and parse css.
@@ -67,7 +67,7 @@ export default async (options: Options) => {
 
 	// Write file to disk.
 	try {
-		fs.writeFileSync(path.join(options.output, fileName.replace(/ /g, '')), generatedFile);
+		fs.writeFileSync(path.join(dirPath, fileName.replace(/ /g, '')), generatedFile);
 		console.log(`✅ - Successfully built ${chalk.grey(`(${(endTime - startTime).toFixed()}ms)`)}`);
 	} catch (error) {
 		console.log(chalk.redBright.bold('[ERROR]'), error);
