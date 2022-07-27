@@ -9,6 +9,7 @@ import autoprefixer from 'autoprefixer';
 
 import { getConfig, generateMeta, getMissingMeta, getSlash } from './utils.js';
 import { DEFAULTS } from './defaults.js';
+import log from './log.js';
 
 interface Options {
 	target: string;
@@ -21,13 +22,8 @@ const config = await getConfig();
 const { meta } = config;
 const missingMeta = getMissingMeta(meta);
 
-if (!meta) {
-	console.log(`${chalk.redBright('[ERROR]')} Your ${chalk.yellow('`bd-scss.config.js`')} file is missing the ${chalk.yellow('`meta`')} object.`);
-	process.exit(1);
-}
-if (missingMeta.length > 0) {
-	console.log(`${chalk.redBright('[ERROR]')} Your ${chalk.yellow('`meta`')} object is missing the following required properties:\n` + missingMeta.map((key) => ` - ${key}\n`).join(''));
-}
+if (!meta) log.error(`Your ${log.code('bd-scss.config.js')} file is missing the ${log.code('meta')} object.`);
+if (missingMeta.length > 0) log.error(`Your ${log.code('meta')} object is missing the following requires properties:\n` + missingMeta);
 
 export default async (options: Options) => {
 	const startTime = performance.now();
@@ -39,12 +35,9 @@ export default async (options: Options) => {
 		.join(getSlash);
 
 	// // Check if target file exists.
-	if (!fs.existsSync(options.target)) {
-		console.log(`${chalk.redBright('[ERROR]')} Cannot find the target file: ${chalk.yellow('`' + options.target + '`')}`);
-		process.exit(1);
-	}
+	if (!fs.existsSync(options.target)) log.error(`Cannot find the target file ${log.code(options.target)}`);
 
-	console.log(`🔨 - Building ${chalk.yellow('`' + options.target + '`')} file...`);
+	log.info(`Building ${log.code(options.target)} file...`);
 
 	// Check if path exists, if not make it.
 	if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
@@ -68,8 +61,8 @@ export default async (options: Options) => {
 	// Write file to disk.
 	try {
 		fs.writeFileSync(path.join(dirPath, fileName.replace(/ /g, '')), generatedFile);
-		console.log(`✅ - Successfully built ${chalk.grey(`(${(endTime - startTime).toFixed()}ms)`)}`);
+		log.success(`Built in ${(endTime - startTime).toFixed()}ms`);
 	} catch (error) {
-		console.log(chalk.redBright.bold('[ERROR]'), error);
+		log.error(error);
 	}
 };

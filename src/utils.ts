@@ -90,5 +90,5 @@ export const getMissingMeta = (meta: Record<string, any>) => {
 		if (!keys.includes(requiredKey)) missing = [...missing, requiredKey];
 	});
 
-	return missing;
+	return missing.map((key) => ` - ${key}\n`).join();
 };

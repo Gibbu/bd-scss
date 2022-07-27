@@ -6,7 +6,7 @@ export interface Config {
 	 * This will default to your `meta.name` if this option is not provided.  
 	 * 
 	 * This **WILL** name both the "dist" and "base" css files.  
-	 * Example: `CoolTheme.theme.css` and `CoolTheme.css`.
+	 * Example: "CoolTheme" = `CoolTheme.theme.css` and `CoolTheme.css`.
 	 */
 	fileName?: string;
 
@@ -30,7 +30,6 @@ export interface Config {
 		name: string;
 		/**
 		 * Your Discord Tag or whatever you call yourself.  
-		 * 
 		 */
 		author: string;
 		/** The version of your theme */
@@ -97,7 +96,7 @@ export interface Config {
 	 * ```json
 	 * {
 	 * 	"target": "src/dist.scss",
-	 * 	"output": "C:/Users/Gibbu/AppData/Roaming/BetterDiscord/themes"
+	 * 	"output": "path/to/BetterDiscord/themes"
 	 * }
 	 * ```
 	 */
@@ -110,8 +109,8 @@ export interface Config {
 	 * Any addons that should be compiled separately from your theme files.  
 	 * Example being Horizontal Server List and it's bottomhsl addon.
 	 * 
-	 * The first index is the target file while the 2nd index is the output file, relative to your
-	 * project directory.  
+	 * The first index is the target file while the 2nd index is the output file,  
+	 * relative to your project directory.  
 	 * 
 	 * You **MUST** provide the full path to file, including the extension.  
 	 * As the compiler will not auto name these for you.  
@@ -122,7 +121,8 @@ export interface Config {
 
 	/**
 	 * The `@import` url used in the .theme.css file.  
-	 * If for some reason your GitHub name isn't in the `meta.name` use this to change it.  
+	 * If for some reason your GitHub name isn't in the `meta.name` or  
+	 * you're building to a differnet diectory use this to change it.
 	 * 
 	 * Example: `https://discordstyles.github.io/Fluent/Fluent.css`
 	 */
