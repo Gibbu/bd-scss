@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-// @ts-ignore
-import sass from 'sass'; // Types are outdated :(
+import sass from 'sass';
 import { Processor } from 'postcss';
 import autoprefixer from 'autoprefixer';
 
@@ -45,14 +44,14 @@ export default async (options: Options) => {
 	if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 
 	// Compile and parse css.
-	let css: string = sass.compile(options.target, {
-		charset: false,
+	const css = sass.compile(options.target, {
+		charset: false
 	}).css;
 
 	const postcss = new Processor([autoprefixer]).process(css);
 	const parsedcss = postcss.css;
 
-	let generatedFile: string | undefined = undefined;
+	let generatedFile: string | undefined = '';
 
 	if (isTheme) {
 		generatedFile = await generateMeta();
@@ -62,9 +61,14 @@ export default async (options: Options) => {
 
 	const endTime = performance.now();
 
+	if (!generatedFile) {
+		log.error('Could not generate file');
+		return;
+	}
+
 	// Write file to disk.
 	try {
-		fs.writeFileSync(path.join(dirPath, fileName.replace(/ /g, '')), generatedFile as string);
+		fs.writeFileSync(path.join(dirPath, fileName.replace(/ /g, '')), generatedFile);
 		log.success(`Built in ${(endTime - startTime).toFixed()}ms`);
 	} catch (error) {
 		log.error(error);

@@ -6,15 +6,15 @@ const dataFolder = getDataFolder();
 export const DEFAULTS = {
 	dev: {
 		target: 'src/dev.scss',
-		output: dataFolder,
+		output: dataFolder
 	},
 	dist: {
 		target: 'src/dist.scss',
-		output: 'dist',
+		output: 'dist'
 	},
 	base: {
 		target: 'src/base.scss',
-		output: 'dist',
+		output: 'dist'
 	},
-	baseImport: `https://${config?.meta.author.toLowerCase()}.github.io/${config?.meta.name}/${config?.meta.name}.css`,
+	baseImport: `https://${config?.meta.author.toLowerCase()}.github.io/${config?.meta.name}/${config?.meta.name}.css`
 };

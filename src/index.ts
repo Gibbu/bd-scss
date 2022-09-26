@@ -23,13 +23,13 @@ prog
 			await compile({
 				target: getPath(config?.dist?.target || DEFAULTS.dist.target),
 				output: getPath(config?.dist?.output || DEFAULTS.dist.output),
-				mode: 'dist',
+				mode: 'dist'
 			});
 
 			// Builds the "base" .css file to be @import'd
 			await compile({
 				target: getPath(config?.base?.target || DEFAULTS.base.target),
-				output: getPath(config?.base?.output || DEFAULTS.base.output),
+				output: getPath(config?.base?.output || DEFAULTS.base.output)
 			});
 		} catch (err) {
 			log.error(err);
@@ -42,7 +42,7 @@ prog
 					await compile({
 						target: getPath(addon[0]),
 						output: getPath(addon[1]),
-						mode: 'addon',
+						mode: 'addon'
 					});
 				} catch (err) {
 					log.error(err);
@@ -67,7 +67,7 @@ prog
 					await compile({
 						target: getPath(config?.dev?.target || DEFAULTS.dev.target),
 						output: getPath(config?.dev?.output || DEFAULTS.dev.output),
-						mode: 'dev',
+						mode: 'dev'
 					});
 				} catch (err) {
 					log.error(err);

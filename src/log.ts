@@ -16,5 +16,5 @@ export default {
 	},
 	code: (message: unknown | any, char: string = '`') => {
 		return chalk.yellow(`${char}` + message + `${char}`);
-	},
+	}
 };
