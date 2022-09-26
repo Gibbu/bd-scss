@@ -1,6 +1,6 @@
 {
 	"name": "bd-scss",
-	"version": "2.0.9",
+	"version": "2.0.10",
 	"description": "Simple package to create themes using SCSS for BetterDiscord.",
 	"type": "module",
 	"keywords": [
@@ -29,17 +29,17 @@
 		"dev": "npx tsc -w"
 	},
 	"dependencies": {
-		"autoprefixer": "^10.4.2",
-		"chalk": "^5.0.0",
+		"autoprefixer": "^10.4.12",
+		"chalk": "^5.0.1",
 		"chokidar": "^3.5.3",
-		"postcss": "^8.4.5",
+		"postcss": "^8.4.16",
 		"sade": "^1.8.1",
-		"sass": "^1.49.0"
+		"sass": "^1.55.0"
 	},
 	"devDependencies": {
 		"@types/find-config": "^1.0.1",
-		"@types/node": "^18.0.0",
+		"@types/node": "^18.7.21",
 		"prettier": "^2.7.1",
-		"typescript": "^4.7.4"
+		"typescript": "^4.8.3"
 	}
 }

@@ -19,25 +19,25 @@ prog
 		log.info(`Running ${log.code('build')} script...`);
 
 		try {
+			// Bullds the .theme.css file for end users to download and install.
 			await compile({
-				target: getPath(config.dist?.target || DEFAULTS.dist.target),
-				output: getPath(config.dist?.output || DEFAULTS.dist.output),
+				target: getPath(config?.dist?.target || DEFAULTS.dist.target),
+				output: getPath(config?.dist?.output || DEFAULTS.dist.output),
 				mode: 'dist',
 			});
 
 			// Builds the "base" .css file to be @import'd
 			await compile({
-				target: getPath(config.base?.target || DEFAULTS.base.target),
-				output: getPath(config.base?.output || DEFAULTS.base.output),
+				target: getPath(config?.base?.target || DEFAULTS.base.target),
+				output: getPath(config?.base?.output || DEFAULTS.base.output),
 			});
 		} catch (err) {
 			log.error(err);
 		}
-		// Bullds the .theme.css file for end users to download and install.
 
 		// Builds any addons
-		if (config.addons && Array.isArray(config.addons) && config.addons.length > 0) {
-			config.addons.forEach(async (addon) => {
+		if (config?.addons && Array.isArray(config?.addons) && config?.addons.length > 0) {
+			config?.addons.forEach(async (addon) => {
 				try {
 					await compile({
 						target: getPath(addon[0]),
@@ -60,13 +60,13 @@ prog
 		chokidar
 			.watch('src', { usePolling: true })
 			.on('ready', () => {
-				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(config.dev?.output || DEFAULTS.dev.output)}\n`, 'DEV');
+				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}\n`, 'DEV');
 			})
 			.on('change', async () => {
 				try {
 					await compile({
-						target: getPath(config.dev?.target || DEFAULTS.dev.target),
-						output: getPath(config.dev?.output || DEFAULTS.dev.output),
+						target: getPath(config?.dev?.target || DEFAULTS.dev.target),
+						output: getPath(config?.dev?.output || DEFAULTS.dev.output),
 						mode: 'dev',
 					});
 				} catch (err) {
