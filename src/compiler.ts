@@ -45,7 +45,8 @@ export default async (options: Options) => {
 
 	// Compile and parse css.
 	const css = sass.compile(options.target, {
-		charset: false
+		charset: false,
+		loadPaths: ['node_modules']
 	}).css;
 
 	const postcss = new Processor([autoprefixer]).process(css);
