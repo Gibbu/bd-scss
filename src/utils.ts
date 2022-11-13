@@ -59,7 +59,7 @@ export const getDataFolder = () => {
 	if (getOs() === 'WIN') folder = devPath || path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
 	else if (getOs() === 'MACOS')
 		folder = devPath || path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
-	else if (getOs() === 'LINUX') folder = devPath || path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
+	else if (getOs() === 'LINUX') folder = devPath || path.resolve(process.env.HOME!, '.config', 'BetterDiscord', 'themes');
 	else throw new Error('Cannot determine your OS.');
 
 	if (!fs.existsSync(getPath(folder))) {
