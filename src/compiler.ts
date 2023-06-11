@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import sass from 'sass';
+import * as sass from 'sass';
 import { Processor } from 'postcss';
 import autoprefixer from 'autoprefixer';
 
