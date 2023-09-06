@@ -2,6 +2,7 @@
 
 import sade from 'sade';
 import chokidar from 'chokidar';
+import { exec } from 'child_process';
 
 import compile from './compiler.js';
 import { getConfig, getPath } from './utils.js';
@@ -9,7 +10,6 @@ import { DEFAULTS } from './defaults.js';
 import log from './log.js';
 
 const config = await getConfig();
-
 const prog = sade('bd-scss');
 
 prog
@@ -32,7 +32,7 @@ prog
 				output: getPath(config?.base?.output || DEFAULTS.base.output)
 			});
 		} catch (err) {
-			log.error(err);
+			log.error(err as string);
 		}
 
 		// Builds any addons
@@ -45,7 +45,7 @@ prog
 						mode: 'addon'
 					});
 				} catch (err) {
-					log.error(err);
+					log.error(err as string);
 				}
 			});
 		}
@@ -58,11 +58,13 @@ prog
 	.describe('Watch the SRC folder for changes and autocompile them to the BetterDiscord themes folder.')
 	.action(async () => {
 		chokidar
-			.watch('src', { usePolling: true })
+			.watch(['src'], { usePolling: true })
 			.on('ready', () => {
 				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}\n`, 'DEV');
 			})
 			.on('change', async () => {
+				// TODO: somehow reload the dev server.
+
 				try {
 					await compile({
 						target: getPath(config?.dev?.target || DEFAULTS.dev.target),
@@ -70,7 +72,7 @@ prog
 						mode: 'dev'
 					});
 				} catch (err) {
-					log.error(err);
+					log.error(err as string);
 				}
 			});
 	});

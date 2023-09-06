@@ -55,7 +55,7 @@ export default async (options: Options) => {
 	let generatedFile: string | undefined = '';
 
 	if (isTheme) {
-		generatedFile = await generateMeta();
+		generatedFile = await generateMeta(config);
 		if (options.mode === 'dist') generatedFile += `@import url('${config?.baseImport || DEFAULTS.baseImport}');\n\n`;
 	}
 	generatedFile += parsedcss;
@@ -72,6 +72,6 @@ export default async (options: Options) => {
 		fs.writeFileSync(path.join(dirPath, fileName.replace(/ /g, '')), generatedFile);
 		log.success(`Built in ${(endTime - startTime).toFixed()}ms`);
 	} catch (error) {
-		log.error(error);
+		log.error(error as string);
 	}
 };

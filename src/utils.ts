@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import log from './log.js';
 
-import type { Config } from './config.js';
+import type { Config, Var } from './config.js';
 
 /**
  * Get the current OS.
@@ -31,19 +31,6 @@ export const getConfig = async () => {
 				`If you do have a config file, make sure you include ${log.code('type": "module', '"')} in your ${log.code('package.json')} file.`
 		);
 	}
-};
-
-/**
- * Construct the meta given by the `bd-scss.config.js` file.
- */
-export const generateMeta = async () => {
-	const config = await getConfig();
-
-	if (!config) return;
-
-	return `/**\n${Object.entries(config.meta)
-		.map(([key, value]) => ` * @${key} ${value}\n`)
-		.join('')}*/\n\n`;
 };
 
 /**
@@ -92,4 +79,59 @@ export const getMissingMeta = (meta: Record<string, any>) => {
 	});
 
 	return missing.map((key) => ` - ${key}\n`).join();
+};
+
+/**
+ * Construct the meta given by the `bd-scss.config.js` file.
+ */
+export const generateMeta = async (config: Config | undefined) => {
+	if (!config) return;
+
+	let meta: string = '';
+
+	meta = `/**\n${Object.entries(config.meta)
+		.map(([key, value]) => (key !== 'vars' ? ` * @${key} ${value}\n` : ''))
+		.join('')}`;
+
+	if (config.meta.vars) {
+		meta += config.meta.vars.map((el) => ` * @var ${constructVars(el)}`).join('');
+	}
+
+	meta += '*/\n';
+
+	return meta;
+};
+
+/**
+ * Construct the vars for theme settings.
+ */
+export const constructVars = (obj: Var): string => {
+	const getLabel = (obj: Var) => `"${obj.hint ? `${obj.label}:${obj.hint}` : obj.label}"`;
+
+	if (obj.type === 'checkbox' || obj.type === 'color' || obj.type === 'text') {
+		if (obj.type === 'color' && !/(^rgb\(|hsl\()|#/.test(obj.default)) {
+			log.error([
+				'Default color code must be a valid css color value.',
+				` - Variable: ${obj.variable}`,
+				` - Default: ${obj.default} ${log.comment('-> ' + (obj.default.includes('%') ? `hsl(${obj.default})` : `rgb(${obj.default})`))}`,
+				'',
+				log.comment("You'll have to switch to a `text` @var input instead.")
+			]);
+		}
+		return `${obj.type} ${obj.variable} ${getLabel(obj)} ${obj.default}\n`;
+	} else if (obj.type === 'number' || obj.type === 'range') {
+		const { default: defVal, max, min, step, type, variable, units } = obj;
+		return `${type} ${variable} ${getLabel(obj)} [${defVal}, ${min}, ${max}, ${step}${units ? `, "${units}"` : ''}]\n`;
+	} else if (obj.type === 'select') {
+		return (
+			`select ${obj.variable} ${getLabel(obj)} {\n` +
+			' ' +
+			obj.options
+				.map((el, i) => ` * "${el.label}${el.default ? '*' : ''}": "${el.value}"${i !== obj.options.length - 1 ? ',' : ''}\n`)
+				.join('')
+				.trim() +
+			'\n * }\n'
+		);
+	}
+	return '@error There was an error?';
 };

@@ -1,20 +1,25 @@
-import chalk from 'chalk';
+import c from 'kleur';
+
+const getMessage = (message: string | string[]) => (typeof message === 'string' ? message : message.join('\n'));
 
 export default {
-	success: (message: unknown | any) => {
-		console.log(`${chalk.greenBright.bold('[SUCCESS]')} ${message}`);
+	success: (message: string | string[]) => {
+		console.log(`${c.green().bold('[SUCCESS]')} ${getMessage(message)}`);
 	},
-	warning: (message: unknown | any) => {
-		console.log(`${chalk.yellowBright.bold('[WARNING]')} ${message}`);
+	warning: (message: string | string[]) => {
+		console.log(`${c.yellow().bold('[WARNING]')} ${getMessage(message)}`);
 	},
-	error: (message: unknown | any) => {
-		console.log(`\n${chalk.redBright.bold('[ERROR]')} ${message}\n`);
+	error: (message: string | string[]) => {
+		console.log(`\n${c.red().bold('[ERROR]')} ${getMessage(message)}\n`);
 		process.exit(1);
 	},
-	info: (message: unknown | any, title?: string) => {
-		console.log(`${chalk.blueBright.bold(`[${title || 'INFO'}]`)} ${message}`);
+	info: (message: string | string[], title?: string) => {
+		console.log(`${c.blue().bold(`[${title || 'INFO'}]`)} ${getMessage(message)}`);
 	},
-	code: (message: unknown | any, char: string = '`') => {
-		return chalk.yellow(`${char}` + message + `${char}`);
+	code: (message: string, char: string = '`') => {
+		return c.yellow(`${char}` + message + `${char}`);
+	},
+	comment: (message: string) => {
+		return c.grey(message);
 	}
 };

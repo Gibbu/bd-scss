@@ -1,7 +1,7 @@
 import { getConfig, getDataFolder } from './utils.js';
 
-const config = await getConfig();
 const dataFolder = getDataFolder();
+const config = await getConfig();
 
 export const DEFAULTS = {
 	dev: {
