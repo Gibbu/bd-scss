@@ -21,7 +21,7 @@ interface ColourVar extends BaseVar<'color'> {
 
 interface CheckboxVar extends BaseVar<'checkbox'> {
 	/** The default value of the input. */
-	default: boolean;
+	default: 0 | 1;
 }
 
 interface SelectVar extends BaseVar<'select'> {
