@@ -2,17 +2,29 @@
 
 import sade from 'sade';
 import chokidar from 'chokidar';
-import { exec } from 'child_process';
 
 import compile from './compiler.js';
-import { getConfig, getPath } from './utils.js';
-import { DEFAULTS } from './defaults.js';
+import { getConfig, getPath, getMissingMeta, requiredMeta } from './utils.js';
+import { CONFIG } from './config.js';
 import log from './log.js';
 
 const config = await getConfig();
-const prog = sade('bd-scss');
+const cli = sade('bd-scss');
 
-prog
+if (!config) log.error(`Unable to find your ${log.code('bd-scss.config.js')} file.`);
+if (!config?.meta)
+	log.error([
+		`Your ${log.code('bd-scss.config.js')} file must contain a ${log.code('meta')} object with the required props.`,
+		log.comment(`Required props: ${requiredMeta.join(', ')}`)
+	]);
+
+const { meta } = config!;
+const missingMeta = getMissingMeta(meta);
+
+if (!meta) log.error(`Your ${log.code('bd-scss.config.js')} file is missing the ${log.code('meta')} object.`);
+if (missingMeta.length > 0) log.error(`Your ${log.code('meta')} object is missing the following requires properties:\n` + missingMeta);
+
+cli
 	.command('build')
 	.describe('Compiles the `dist` and `base` config objects.')
 	.action(async () => {
@@ -20,17 +32,23 @@ prog
 
 		try {
 			// Bullds the .theme.css file for end users to download and install.
-			await compile({
-				target: getPath(config?.dist?.target || DEFAULTS.dist.target),
-				output: getPath(config?.dist?.output || DEFAULTS.dist.output),
-				mode: 'dist'
-			});
+			await compile(
+				{
+					target: getPath(CONFIG.dist.target),
+					output: getPath(CONFIG.dist.output),
+					mode: 'dist'
+				},
+				CONFIG.theme.file
+			);
 
 			// Builds the "base" .css file to be @import'd
-			await compile({
-				target: getPath(config?.base?.target || DEFAULTS.base.target),
-				output: getPath(config?.base?.output || DEFAULTS.base.output)
-			});
+			await compile(
+				{
+					target: getPath(CONFIG.base.target),
+					output: getPath(CONFIG.base.output)
+				},
+				CONFIG.theme.base
+			);
 		} catch (err) {
 			log.error(err as string);
 		}
@@ -39,11 +57,14 @@ prog
 		if (config?.addons && Array.isArray(config?.addons) && config?.addons.length > 0) {
 			config?.addons.forEach(async (addon) => {
 				try {
-					await compile({
-						target: getPath(addon[0]),
-						output: getPath(addon[1]),
-						mode: 'addon'
-					});
+					await compile(
+						{
+							target: getPath(addon[0]),
+							output: getPath(addon[1]),
+							mode: 'addon'
+						},
+						addon[1].split('/').pop()!
+					);
 				} catch (err) {
 					log.error(err as string);
 				}
@@ -53,28 +74,31 @@ prog
 		log.success('Built all files.');
 	});
 
-prog
+cli
 	.command('dev')
 	.describe('Watch the SRC folder for changes and autocompile them to the BetterDiscord themes folder.')
 	.action(async () => {
 		chokidar
 			.watch(['src'], { usePolling: true })
 			.on('ready', () => {
-				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}\n`, 'DEV');
+				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(CONFIG.dev.output)}\n`, 'DEV');
 			})
 			.on('change', async () => {
 				// TODO: somehow reload the dev server.
 
 				try {
-					await compile({
-						target: getPath(config?.dev?.target || DEFAULTS.dev.target),
-						output: getPath(config?.dev?.output || DEFAULTS.dev.output),
-						mode: 'dev'
-					});
+					await compile(
+						{
+							target: getPath(CONFIG.dev.target),
+							output: getPath(CONFIG.dev.output),
+							mode: 'dev'
+						},
+						CONFIG.theme.file
+					);
 				} catch (err) {
 					log.error(err as string);
 				}
 			});
 	});
 
-prog.parse(process.argv);
+cli.parse(process.argv);

@@ -71,15 +71,16 @@ export const getPath = (...val: string[]) => {
 export const getMissingMeta = (meta: Record<string, any>) => {
 	const keys = Object.keys(meta);
 
-	const requiredMeta = ['name', 'author', 'description', 'version', 'source'];
 	let missing: string[] = [];
 
 	requiredMeta.forEach((requiredKey) => {
 		if (!keys.includes(requiredKey)) missing = [...missing, requiredKey];
 	});
 
-	return missing.map((key) => ` - ${key}\n`).join();
+	return missing.map((key) => ` - ${key}\n`).join('');
 };
+/** Required BetterDiscord meta fields */
+export const requiredMeta = ['name', 'author', 'description', 'version', 'source'];
 
 /**
  * Construct the meta given by the `bd-scss.config.js` file.

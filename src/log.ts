@@ -1,6 +1,10 @@
 import c from 'kleur';
 
-const getMessage = (message: string | string[]) => (typeof message === 'string' ? message : message.join('\n'));
+const getMessage = (message: string | string[]) => {
+	if (typeof message === 'string') return message;
+	else if (Array.isArray(message)) return message.join('\n');
+	else return message;
+};
 
 export default {
 	success: (message: string | string[]) => {
@@ -10,7 +14,7 @@ export default {
 		console.log(`${c.yellow().bold('[WARNING]')} ${getMessage(message)}`);
 	},
 	error: (message: string | string[]) => {
-		console.log(`\n${c.red().bold('[ERROR]')} ${getMessage(message)}\n`);
+		console.log(`${c.red().bold('[ERROR]')} ${getMessage(message)}\n`);
 		process.exit(1);
 	},
 	info: (message: string | string[], title?: string) => {
