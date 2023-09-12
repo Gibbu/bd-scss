@@ -109,6 +109,8 @@ export interface Config {
 		website?: string;
 		/** Your Discord unique ID. */
 		authorId?: string;
+		/** URL to whatever you wish to link to. */
+		authorLink?: string;
 		/**
 		 * Theme setting variables.
 		 *
