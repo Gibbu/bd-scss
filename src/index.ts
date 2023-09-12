@@ -12,13 +12,24 @@ const config = await getConfig();
 const cli = sade('bd-scss');
 
 if (!config) log.error(`Unable to find your ${log.code('bd-scss.config.js')} file.`);
-if (!config?.meta)
+if (!config?.meta) {
 	log.error([
 		`Your ${log.code('bd-scss.config.js')} file must contain a ${log.code('meta')} object with the required props.`,
 		log.comment(`Required props: ${requiredMeta.join(', ')}`)
 	]);
+	process.exit(1);
+}
 
-const { meta } = config!;
+if ('fileName' in config || 'baseImport' in config)
+	log.error([
+		`Your ${log.code('bd-scss.config.js')} file has unsupported properties. The following have been removed:`,
+		' - fileName',
+		' - baseImport',
+		'',
+		`Use the new ${log.code('github')} and ${log.code('theme')} objects to determine your files.`
+	]);
+
+const { meta } = config;
 const missingMeta = getMissingMeta(meta);
 
 if (!meta) log.error(`Your ${log.code('bd-scss.config.js')} file is missing the ${log.code('meta')} object.`);
