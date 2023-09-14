@@ -1,6 +1,7 @@
 # bd-scss
 
 Simple package to create themes for BetterDiscord using SCSS.
+> I highly recommend using the CLI I built has it does all the instructions for you: [gibbu/create-bd-theme](https://github.com/Gibbu/create-bd-theme)
 
 <br>
 
