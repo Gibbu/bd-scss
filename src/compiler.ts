@@ -9,6 +9,8 @@ import { getConfig, generateMeta, getMissingMeta, getSlash } from './utils.js';
 import { DEFAULTS } from './defaults.js';
 import log from './log.js';
 
+import { performance } from 'perf_hooks';
+
 interface Options {
 	target: string;
 	output: string;
