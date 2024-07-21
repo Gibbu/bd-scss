@@ -8,10 +8,16 @@ import type { Config } from './config.js';
  * Get the current OS.
  */
 export const getOs = () => {
-	if (process.platform === 'win32') return 'WIN';
-	else if (process.platform === 'darwin') return 'MACOS';
-	else if (process.platform === 'linux') return 'LINUX';
-	return 'UNDEFINED';
+	switch (String(process.platform)) {
+	case 'win32':
+		 return 'WIN';
+	case 'darwin':
+		 return 'MACOS';
+	case 'linux':
+		 return 'LINUX';
+	default:
+		return 'UNDEFINED';
+	}
 };
 
 export const getSlash = getOs() === 'WIN' ? '\\' : '/';
@@ -54,17 +60,47 @@ export const getDataFolder = () => {
 	if (process.argv[2] === 'build') return 'dist';
 
 	let devPath: string | undefined;
-	let folder: string;
+	var folder = '';
 
-	if (getOs() === 'WIN') folder = devPath || path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
-	else if (getOs() === 'MACOS')
-		folder = devPath || path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
-	else if (getOs() === 'LINUX') folder = devPath || path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
-	else throw new Error('Cannot determine your OS.');
-
-	if (!fs.existsSync(getPath(folder))) {
-		log.error(`Directory does not exist: ${log.code('`' + getPath(folder) + '`')}`);
+	const checkDir = (dir: string, exitOnError: boolean) => {
+		if (!fs.existsSync(getPath(dir))) {
+			switch (exitOnError) {
+				case true:
+					log.error(`Directory does not exist: ${log.code('`' + getPath(dir) + '`')}`);
+				case false:
+					log.warning(`Directory does not exist: ${log.code('`' + getPath(dir) + '`')}`);
+			}
+		}
 	}
+
+	switch (String(getOs()))  {
+		case 'WIN':
+			folder = devPath || path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
+			checkDir(folder, true);
+			break;
+		case 'MACOS':
+			folder = devPath || path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
+			checkDir(folder, true);
+			break;
+		case 'LINUX':
+			let linux_paths: string[] = [
+			path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes'),
+			path.resolve(process.env.HOME!, '.config', 'BetterDiscord', 'themes') ]
+
+			let path_count = linux_paths.length
+			linux_paths.forEach( (linux_path) => {
+				folder = devPath || linux_path
+				log.info(`Trying ${log.code('`' + getPath(folder) + '`')} ...`);
+				if (!--path_count) 
+					checkDir(folder, true);
+				else 
+				checkDir(folder, false)	
+			});
+			break;
+
+		case 'UNDEFINED':
+				 log.error('Cannot determine your OS.');
+		}
 
 	if (folder[0] === '~') folder = process.env.HOME! + folder.substring(1);
 
