@@ -28,7 +28,7 @@ export const getConfig = async () => {
 	} catch (err) {
 		log.error(
 			`Cannot find ${log.code('bd-scss.config.js')} in the root of your directory.\n\n` +
-				`If you do have a config file, make sure you include ${log.code('type": "module', '"')} in your ${log.code('package.json')} file.`
+			`If you do have a config file, make sure you include ${log.code('type": "module', '"')} in your ${log.code('package.json')} file.`
 		);
 	}
 };
@@ -54,17 +54,24 @@ export const getDataFolder = () => {
 	if (process.argv[2] === 'build') return 'dist';
 
 	let devPath: string | undefined;
-	let folder: string;
+	let folder: string = '';
 
-	if (getOs() === 'WIN') folder = devPath || path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
-	else if (getOs() === 'MACOS')
-		folder = devPath || path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
-	else if (getOs() === 'LINUX') folder = devPath || path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes');
-	else throw new Error('Cannot determine your OS.');
+	if (getOs() === 'WIN') folder = path.resolve(process.env.APPDATA!, 'BetterDiscord', 'themes');
+	else if (getOs() === 'MACOS') folder = path.resolve(process.env.HOME!, 'Library', 'Application Support', 'BetterDiscord', 'themes');
+	else if (getOs() === 'LINUX') {
+		const linuxPaths = [
+			path.resolve(process.env.HOME!, '.local', 'share', 'BetterDiscord', 'themes'),
+			path.resolve(process.env.HOME!, '.config', 'BetterDiscord', 'themes')
+		];
+		for (let i = 0; i < linuxPaths.length; i++) {
+			const el = linuxPaths[i];
+			if (fs.existsSync(el)) {
+				folder = el;
+				break;
+			}
+		}
 
-	if (!fs.existsSync(getPath(folder))) {
-		log.error(`Directory does not exist: ${log.code('`' + getPath(folder) + '`')}`);
-	}
+	} else throw new Error('Cannot determine your OS.');
 
 	if (folder[0] === '~') folder = process.env.HOME! + folder.substring(1);
 
