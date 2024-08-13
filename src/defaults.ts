@@ -1,7 +1,12 @@
 import { getConfig, getDataFolder } from './utils.js';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 const config = await getConfig();
-const dataFolder = getDataFolder();
+//Check for a absolute path given to the dev folder to suppress missing folder messages
+//because if we supplied a absolute path we are explicitly using a nonstandard setup so straight dir existence verification is preferred
+const devOutput = config?.dev?.output;
+const dataFolder = path.isAbsolute(devOutput) && fs.existsSync(devOutput) ? devOutput : getDataFolder();
 
 export const DEFAULTS = {
 	dev: {
