@@ -25,8 +25,8 @@
 	},
 	"license": "MIT",
 	"scripts": {
-		"build": "npx tsc",
-		"dev": "npx tsc -w"
+		"build": "bun tsc",
+		"dev": "bun tsc -w"
 	},
 	"dependencies": {
 		"autoprefixer": "^10.4.20",

@@ -87,7 +87,8 @@ prog
 
 		if (filesChanged.length > 0)
 			log.success([
-				`Classes rerolled. Duration: ${(endTime - startTime).toFixed()}ms.`,
+				`Classes rerolled.`,
+				`Duration: ${(endTime - startTime).toFixed()}ms.`,
 				`Files Changed:`,
 				filesChanged.map((el) => '\t - ' + el).join('\n')
 			]);
