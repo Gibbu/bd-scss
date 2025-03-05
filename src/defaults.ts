@@ -6,7 +6,7 @@ const config = await getConfig();
 //Check for a absolute path given to the dev folder to suppress missing folder messages
 //because if we supplied a absolute path we are explicitly using a nonstandard setup so straight dir existence verification is preferred
 const devOutput = config?.dev?.output;
-const dataFolder = path.isAbsolute(devOutput) && fs.existsSync(devOutput) ? devOutput : getDataFolder();
+const dataFolder = devOutput && path.isAbsolute(devOutput) && fs.existsSync(devOutput) ? devOutput : getDataFolder();
 
 export const DEFAULTS = {
 	dev: {

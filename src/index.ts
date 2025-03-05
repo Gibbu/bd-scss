@@ -3,10 +3,11 @@
 import sade from 'sade';
 import chokidar from 'chokidar';
 
-import compile from './compiler.js';
+import { compile } from './compiler.js';
 import { getConfig, getPath } from './utils.js';
 import { DEFAULTS } from './defaults.js';
-import log from './log.js';
+import { log } from './log.js';
+import { classReroll } from './classReroll.js';
 
 const config = await getConfig();
 
@@ -16,7 +17,7 @@ prog
 	.command('build')
 	.describe('Compiles the `dist` and `base` config objects.')
 	.action(async () => {
-		log.info(`Running ${log.code('build')} script...`);
+		log.info([`Running ${log.code('build')} script...`]);
 
 		try {
 			// Bullds the .theme.css file for end users to download and install.
@@ -32,7 +33,7 @@ prog
 				output: getPath(config?.base?.output || DEFAULTS.base.output)
 			});
 		} catch (err) {
-			log.error(err);
+			log.error([err]);
 		}
 
 		// Builds any addons
@@ -45,12 +46,12 @@ prog
 						mode: 'addon'
 					});
 				} catch (err) {
-					log.error(err);
+					log.error([err]);
 				}
 			});
 		}
 
-		log.success('Built all files.');
+		log.success(['Built all files.']);
 	});
 
 prog
@@ -60,7 +61,7 @@ prog
 		chokidar
 			.watch('src', { usePolling: true })
 			.on('ready', () => {
-				log.info(`\nWatching: ${log.code('src')} folder.` + `\nOutput: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}\n`, 'DEV');
+				log.info([`\nWatching: ${log.code('src')} folder`, `Output: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}`], 'DEv');
 			})
 			.on('change', async () => {
 				try {
@@ -70,9 +71,27 @@ prog
 						mode: 'dev'
 					});
 				} catch (err) {
-					log.error(err);
+					log.error([err]);
 				}
 			});
+	});
+
+prog
+	.command('classReroll')
+	.describe('Automatically update classes via SyndiShanX/Update-Classes.')
+	.action(async () => {
+		log.info(['Replacing classes...']);
+		const startTime = performance.now();
+		const { classesChanged, filesChanged } = await classReroll();
+		const endTime = performance.now();
+
+		if (filesChanged.length > 0)
+			log.success([
+				`Classes rerolled. Duration: ${(endTime - startTime).toFixed()}ms.`,
+				`Files Changed:`,
+				filesChanged.map((el) => '\t - ' + el).join('\n')
+			]);
+		else log.info(['No files were changed.']);
 	});
 
 prog.parse(process.argv);

@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import log from './log.js';
+import { log } from './log.js';
 
 import type { Config } from './config.js';
 
@@ -26,10 +26,11 @@ export const getConfig = async () => {
 		let config = (await import((getOs() === 'WIN' ? 'file://' : '') + find)).default as Config;
 		return config;
 	} catch (err) {
-		log.error(
-			`Cannot find ${log.code('bd-scss.config.js')} in the root of your directory.\n\n` +
+		log.error([
+			`Cannot find ${log.code('bd-scss.config.js')} in the root of your directory.`,
+			'',
 			`If you do have a config file, make sure you include ${log.code('type": "module', '"')} in your ${log.code('package.json')} file.`
-		);
+		]);
 	}
 };
 
@@ -70,7 +71,6 @@ export const getDataFolder = () => {
 				break;
 			}
 		}
-
 	} else throw new Error('Cannot determine your OS.');
 
 	if (folder[0] === '~') folder = process.env.HOME! + folder.substring(1);
