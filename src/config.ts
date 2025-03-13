@@ -1,130 +1,62 @@
-// prettier-ignore
+/* 
+	How this flows:
+
+		- Dev script grabs the compiler data (meta, addons, and imports dev = true) + the root.scss + the main.scss.
+		- Build script will generate:
+			-	a	"base" file that will only contain the contents of:
+				-	main.scss
+			- a "dist" file that will contain the contents of:
+				-	Compiler data, such as meta & imports.
+				- root.scss
+*/
+
+import type { Addon, GitHub, Import, BetterDiscord, Vencord, RequiredMeta, OptionalMeta } from './types.js';
 
 export interface Config {
-	/**
-	 * The name of the file to be compiled.  
-	 * This will default to your `meta.name` if this option is not provided.  
-	 * 
-	 * This **WILL** name both the "dist" and "base" css files.  
-	 * Example: "CoolTheme" = `CoolTheme.theme.css` and `CoolTheme.css`.
-	 */
-	fileName?: string;
+	meta: RequiredMeta & OptionalMeta;
 
 	/**
-	 * The available BetterDiscord META.
+	 * The entry point to the theme.
+	 *
+	 * @default `src/main.scss`
 	 */
-	meta: {
-		/**
-		 * The name of your theme.  
-		 * 
-		 * To separate the theme name and filename, set the `fileName` option.
-		 * @example
-		 * ```txt
-		 * name = "CoolTheme"
-		 *
-		 * Will generate:
-		 * - CoolTheme.theme.css --- This being the main file that users will download.
-		 * - CoolTheme.css --- This being the file that will be imported.
-		 * ```
-		 */
-		name: string;
-		/**
-		 * Your Discord Tag or whatever you call yourself.  
-		 */
-		author: string;
-		/** The version of your theme */
-		version: string;
-		/** Discribe your theme in a short sentence. */
-		description: string;
-		/** The open-source location of your theme files. */
-		source: string;
-		/** The invite code to your Discord server. */
-		invite?: string;
-		/** Any donation link you wish to provide. */
-		donate?: string;
-		/** Your Patreon name. */
-		patreon?: string;
-		/** Your website. */
-		website?: string;
-		/** Your Discord unique ID. */
-		authorId?: string;
-	};
+	main?: string;
 
 	/**
-	 * The target path of the dist file.  
-	 * 
-	 * You can change either target or output by providing said objects.
-	 * 
-	 * @default
-	 * ```json
-	 * {
-	 * 	"target": "src/dist.scss",
-	 * 	"output": "dist"
-	 * }
-	 * ```
+	 * The root file that contains all your public facing variables.
+	 *
+	 * @default `src/root.scss`
 	 */
-	dist?: {
-		target?: string;
-		output?: string;
-	};
+	root?: string;
 
 	/**
-	 * The target path of the base file.  
-	 * 
-	 * You can change either target or output by providing said objects.
-	 * 
-	 * @default
-	 * ```json
-	 * {
-	 * 	"target": "src/base.scss",
-	 * 	"output": "dist"
-	 * }
-	 * ```
+	 * The GitHub profile to point to.
+	 *
+	 * If string is provided, use that string as the profile
+	 * and grab the `meta.name` for the repo.
 	 */
-	base?: {
-		target?: string;
-		output?: string;
-	};
+	github?: GitHub;
 
 	/**
-	 * The target path of the dist file.  
-	 * 
-	 * You can change either target or output by providing said objects.  
-	 * The `output` **MUST** be an absolute path, as shown in the default.
-	 * 
-	 * @default 
-	 * ```json
-	 * {
-	 * 	"target": "src/dist.scss",
-	 * 	"output": "path/to/BetterDiscord/themes"
-	 * }
-	 * ```
+	 * Any external imports that should be imported with the theme.
+	 *
+	 * Providing a string will only place the addon in the dist file.
 	 */
-	dev?: {
-		target?: string;
-		output?: string;
-	};
+	imports?: Import[];
 
 	/**
-	 * Any addons that should be compiled separately from your theme files.  
-	 * Example being Horizontal Server List and it's bottomhsl addon.
-	 * 
-	 * The first index is the target file while the 2nd index is the output file,  
-	 * relative to your project directory.  
-	 * 
-	 * You **MUST** provide the full path to file, including the extension.  
-	 * As the compiler will not auto name these for you.  
-	 * 
-	 * Example: `['src/addons/_mycooladdon.scss', 'dist/MyCoolAddon.css']`
+	 * Any "external" css files that should be compiled with your theme.
+	 *
+	 * Providing a string will build the addon 1-1 and will not be included any either the dist or dev files.
+	 *
+	 * @example
+	 * 'src/addons/_vertical-user-area.scss' -> 'dist/vertical-user-area.css'
 	 */
-	addons?: ([string, string])[];
+	addons?: Addon[];
 
-	/**
-	 * The `@import` url used in the .theme.css file.  
-	 * If for some reason your GitHub name isn't in the `meta.name` or  
-	 * you're building to a differnet diectory use this to change it.
-	 * 
-	 * Example: `https://discordstyles.github.io/Fluent/Fluent.css`
-	 */
-	baseImport?: string;
+	/** Options for BetterDiscord */
+	betterdiscord?: BetterDiscord;
+
+	/** Options for Vencord */
+	vencord?: Vencord;
 }
