@@ -69,7 +69,7 @@ export const compileDev = async () => {
 	if (config.imports.length > 0) {
 		config.imports.forEach((imp) => {
 			if (typeof imp === 'object' && imp.dev) {
-				file.imports.push(`@import url('${imp.url}');`);
+				file.imports.push(`@import url('${imp.url.toLowerCase().replace(/ /g, '')}');`);
 			}
 		});
 	}

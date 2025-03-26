@@ -141,5 +141,5 @@ export const generateImport = (config: Config, name: string) => {
 	const repo = typeof config.github === 'object' ? config.github.repo : config.meta.name;
 	const profile = config.github ? (typeof config.github === 'string' ? config.github : config.github.profile) : config.meta.author;
 
-	return `@import url('https://${profile.toLowerCase()}.github.io/${repo}/${name}.css');`;
+	return `@import url('https://${profile.replace(/ /g, '').toLowerCase()}.github.io/${repo.replace(/ /g, '')}/${name.replace(/ /g, '')}.css');`;
 };
