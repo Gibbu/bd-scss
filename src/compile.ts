@@ -113,13 +113,12 @@ export const compileDist = async () => {
 	if (config.addons.length > 0) {
 		config.addons.forEach((addon) => {
 			const { target, name, dist } = parseAddon(addon);
+			const css = compileSCSS(target);
 			if (dist) {
-				const css = compileSCSS(target);
 				const imp = generateImport(config, name);
 				distFile.imports.push(imp);
-
-				writeToDisk(name + '.css', css, 'dist');
 			}
+			writeToDisk(name + '.css', css, 'dist');
 		});
 	}
 
