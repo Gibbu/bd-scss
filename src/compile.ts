@@ -7,8 +7,6 @@ import { generateMeta, getConfig, osSlash, splitImports, parseAddon, generateImp
 import { log } from './log.js';
 import path from 'path';
 
-import type { Addon } from './types.js';
-
 class File {
 	meta: string = '';
 	base: string = '';
@@ -50,7 +48,7 @@ const writeToDisk = (name: string, file: string, dir: string) => {
 	}
 };
 
-export const formatFile = (file: File) => {
+const formatFile = (file: File) => {
 	return file.meta + file.base + '\n\n' + file.imports.join('\n') + '\n\n' + file.root + '\n' + file.css;
 };
 

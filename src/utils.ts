@@ -54,7 +54,7 @@ export const getDataFolder = (mod: 'BetterDiscord' | 'Vencord') => {
 	if (process.platform === 'win32') {
 		folder = path.resolve(process.env.APPDATA!, mod, 'themes');
 	} else if (process.platform === 'darwin') {
-		folder = path.resolve(process.env.HOME!, 'Library', 'Application Support', mod);
+		folder = path.resolve(process.env.HOME!, 'Library', 'Application Support', mod, 'themes');
 	} else if (process.platform === 'linux') {
 		const linuxPaths = [
 			path.resolve(process.env.HOME!, '.local', 'share', mod, 'themes'),
@@ -105,7 +105,7 @@ export const splitImports = (css: string) => {
 				imports.push(`@${imp};`);
 				line = line.replaceAll(`@${imp};`, '');
 			}
-			return line;
+			return line.trim();
 		})
 		.join('\n');
 

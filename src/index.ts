@@ -7,6 +7,7 @@ import { checkConfig, checkMeta } from './checker.js';
 import { getConfig } from './utils.js';
 import { log } from './log.js';
 import { compileDev, compileDist } from './compile.js';
+import { reroll } from './reroll.js';
 
 const cli = sade('bd-scss');
 
@@ -46,6 +47,25 @@ cli
 				}
 				await compileDev();
 			});
+	});
+
+cli
+	.command('reroll')
+	.describe('Automatically update classes via SyndiShanX/Update-Classes.')
+	.action(async () => {
+		log.info(['Replacing classes...']);
+		const startTime = performance.now();
+		const { classesChanged, filesChanged } = await reroll();
+		const endTime = performance.now();
+
+		if (filesChanged.length > 0)
+			log.success([
+				`Classes rerolled.`,
+				`Duration: ${(endTime - startTime).toFixed()}ms.`,
+				`Files Changed:`,
+				filesChanged.map((el) => '\t - ' + el).join('\n')
+			]);
+		else log.info(['No files were changed.']);
 	});
 
 cli.parse(process.argv);
