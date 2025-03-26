@@ -1,15 +1,3 @@
-/* 
-	How this flows:
-
-		- Dev script grabs the compiler data (meta, addons, and imports dev = true) + the root.scss + the main.scss.
-		- Build script will generate:
-			-	a	"base" file that will only contain the contents of:
-				-	main.scss
-			- a "dist" file that will contain the contents of:
-				-	Compiler data, such as meta & imports.
-				- root.scss
-*/
-
 import type { Addon, GitHub, Import, BetterDiscord, Vencord, RequiredMeta, OptionalMeta } from './types.js';
 
 export interface Config {

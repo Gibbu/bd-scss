@@ -10,7 +10,9 @@ export const osSlash = process.platform === 'win32' ? '\\' : '/';
  * Get the config with defaults if optional properties aren't passed.
  */
 export const getConfig = async () => {
-	let local = (await import(path.join(process.cwd(), `bd-scss.config.js?id=${Date.now()}`))).default as Config;
+	const find = path.join(process.cwd(), `bd-scss.config.js?id=${Date.now()}`);
+
+	const local = (await import(process.platform === 'win32' ? 'file://' : '' + find)).default as Config;
 
 	const CONFIG = {
 		meta: local.meta,
