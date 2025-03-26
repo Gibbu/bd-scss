@@ -1,6 +1,7 @@
 # bd-scss
 
 Simple package to create themes for BetterDiscord using SCSS.
+
 > I highly recommend using the CLI I built has it does all the instructions for you: [gibbu/create-bd-theme](https://github.com/Gibbu/create-bd-theme)
 
 <br>
@@ -15,6 +16,8 @@ npm install bd-scss
 yarn add bd-scss
 # or
 pnpm add bd-scss
+# or
+bun add bd-scss
 ```
 
 Then create a `bd-scss.config.js` file in the root of your project folder with the following:
@@ -27,15 +30,15 @@ export default {
 		author: 'Gibbu',
 		version: '1.0.0',
 		description: 'My cool theme',
-		source: 'https://github.com/Gibbu/Cooltheme',
-	},
+		source: 'https://github.com/Gibbu/Cooltheme'
+	}
 };
 ```
 
 And then use the `bd-scss` command followed by the script you wish to use.
 
 ```bash
-bd-scss dev # will build to your BetterDiscord themes folder or if you've provided a path in the dev option.
+bd-scss dev # will build to your BetterDiscord themes folder or if you've provided a path in the `betterdiscord.themeFolder` option.
 
 bd-scss build # will build the necessary files to distribute your theme.
 ```
@@ -46,20 +49,16 @@ bd-scss build # will build the necessary files to distribute your theme.
 
 ## Compiler API
 
-| Property     | Type                 | Required | Description                                                                                                                                    |
-| ------------ | -------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `meta`       | Object               | true     | The BetterDiscord theme/plugin META. View all avaiable meta [HERE](https://github.com/BetterDiscord/BetterDiscord/wiki/Plugin-and-Theme-METAs) |
-| `dev`        | Object               | false    | The target and output path of the dev file.                                                                                                    |
-| `dist`       | Object               | false    | The target and output path of the dist file.                                                                                                   |
-| `base`       | Object               | false    | The target and output path of the base file.                                                                                                   |
-| `fileName`   | string               | false    | The name of the file to be compiled. This will default to your `meta.name` if this option is not provided.                                     |
-| `addons`     | ([string, string])[] | false    | Any addons that should be compiled separately from your theme files.                                                                           |
-| `baseImport` | string               | false    | The `@import` url used in the .theme.css file.                                                                                                 |
-
-All `dev`, `dist`, and `base` objects contain a `target` and `output` properties, and are relative to the project directory.  
-Execpt of the `dev.output`, that is an absolute path allowing you to change the location of the BetterDiscord themes folder.
-
-> Example: `C:\Users\Gibbu\AppData\Roaming\BetterDiscord\themes`
+| Property        | Type                 | Required | Description                                                                                                                                    |
+| --------------- | -------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `meta`          | Object               | true     | The BetterDiscord theme/plugin META. View all avaiable meta [HERE](https://github.com/BetterDiscord/BetterDiscord/wiki/Plugin-and-Theme-METAs) |
+| `main`          | string               | false    | The entry point to the theme.                                                                                                                  |
+| `root`          | string               | false    | the root file that contains all your public facing variables.                                                                                  |
+| `github`        | string \| Object     | false    | The github profile to point to when building.                                                                                                  |
+| `imports`       | (string \| Object)[] | false    | Any **external** imports that should be imported with the theme.                                                                               |
+| `addons`        | (string \| Object)[] | false    | Any files that should be compiled with your theme.                                                                                             |
+| `betterdiscord` | Object               | false    | Settings for the BetterDiscord client mod                                                                                                      |
+| `vencord`       | Object               | false    | Settings for the Vencord client mod                                                                                                            |
 
 <br>
 

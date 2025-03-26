@@ -3,86 +3,59 @@
 import sade from 'sade';
 import chokidar from 'chokidar';
 
-import { compile } from './compiler.js';
-import { getConfig, getPath } from './utils.js';
-import { DEFAULTS } from './defaults.js';
+import { checkConfig, checkMeta } from './checker.js';
+import { getConfig } from './utils.js';
 import { log } from './log.js';
-import { classReroll } from './classReroll.js';
+import { compileDev, compileDist } from './compile.js';
+import { reroll } from './reroll.js';
 
-const config = await getConfig();
+const cli = sade('bd-scss');
 
-const prog = sade('bd-scss');
-
-prog
+cli
 	.command('build')
-	.describe('Compiles the `dist` and `base` config objects.')
+	.describe('Compiles theme to the necessary files.')
 	.action(async () => {
-		log.info([`Running ${log.code('build')} script...`]);
+		checkConfig();
+		const config = await getConfig();
+		checkMeta(config.meta);
 
-		try {
-			// Bullds the .theme.css file for end users to download and install.
-			await compile({
-				target: getPath(config?.dist?.target || DEFAULTS.dist.target),
-				output: getPath(config?.dist?.output || DEFAULTS.dist.output),
-				mode: 'dist'
-			});
+		console.log(config.github);
 
-			// Builds the "base" .css file to be @import'd
-			await compile({
-				target: getPath(config?.base?.target || DEFAULTS.base.target),
-				output: getPath(config?.base?.output || DEFAULTS.base.output)
-			});
-		} catch (err) {
-			log.error([err]);
-		}
-
-		// Builds any addons
-		if (config?.addons && Array.isArray(config?.addons) && config?.addons.length > 0) {
-			config?.addons.forEach(async (addon) => {
-				try {
-					await compile({
-						target: getPath(addon[0]),
-						output: getPath(addon[1]),
-						mode: 'addon'
-					});
-				} catch (err) {
-					log.error([err]);
-				}
-			});
-		}
-
-		log.success(['Built all files.']);
+		await compileDist();
 	});
 
-prog
+cli
 	.command('dev')
-	.describe('Watch the SRC folder for changes and autocompile them to the BetterDiscord themes folder.')
+	.describe('Watch the SRC folder for changes and auto compile.')
 	.action(async () => {
+		checkConfig();
+		let config = await getConfig();
+		checkMeta(config.meta);
+
 		chokidar
-			.watch('src', { usePolling: true })
+			.watch(['src', 'bd-scss.config.js'])
 			.on('ready', () => {
-				log.info([`\nWatching: ${log.code('src')} folder`, `Output: ${log.code(config?.dev?.output || DEFAULTS.dev.output)}`], 'DEv');
+				log.info([
+					`\nWatching: ${log.code('src')} folder...`,
+					`BetterDiscord: ${config.betterdiscord.themeFolder}`,
+					config.vencord.dev ? `Vencord: ${config.vencord.themeFolder}` : ''
+				]);
 			})
-			.on('change', async () => {
-				try {
-					await compile({
-						target: getPath(config?.dev?.target || DEFAULTS.dev.target),
-						output: getPath(config?.dev?.output || DEFAULTS.dev.output),
-						mode: 'dev'
-					});
-				} catch (err) {
-					log.error([err]);
+			.on('change', async (filePath) => {
+				if (filePath === 'bd-scss.config.js') {
+					config = await getConfig();
 				}
+				await compileDev();
 			});
 	});
 
-prog
-	.command('classReroll')
+cli
+	.command('reroll')
 	.describe('Automatically update classes via SyndiShanX/Update-Classes.')
 	.action(async () => {
 		log.info(['Replacing classes...']);
 		const startTime = performance.now();
-		const { classesChanged, filesChanged } = await classReroll();
+		const { classesChanged, filesChanged } = await reroll();
 		const endTime = performance.now();
 
 		if (filesChanged.length > 0)
@@ -95,4 +68,4 @@ prog
 		else log.info(['No files were changed.']);
 	});
 
-prog.parse(process.argv);
+cli.parse(process.argv);

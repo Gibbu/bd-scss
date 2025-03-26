@@ -6,12 +6,12 @@
 import fs from 'fs';
 import path from 'path';
 import { log } from './log.js';
-import { getSlash } from './utils.js';
+import { osSlash } from './utils.js';
 
 const SRC = path.join(process.cwd(), 'src');
 const CLASSLIST_URL = 'https://raw.githubusercontent.com/SyndiShanX/Update-Classes/main/Changes.txt';
 
-export const classReroll = async (): Promise<{ classesChanged: number; filesChanged: string[] }> => {
+export const reroll = async (): Promise<{ classesChanged: number; filesChanged: string[] }> => {
 	try {
 		const request = await fetch(CLASSLIST_URL);
 		const classList = await request.text();
@@ -43,7 +43,7 @@ export const classReroll = async (): Promise<{ classesChanged: number; filesChan
 			const oldFile = fs.readFileSync(filePath).toString();
 			const newFile = updateFile(oldFile);
 
-			if (oldFile !== newFile) filesChanged.push(`${file.parentPath.split(getSlash).at(-1)}/${file.name}`);
+			if (oldFile !== newFile) filesChanged.push(`${file.parentPath.split(osSlash).at(-1)}/${file.name}`);
 
 			fs.writeFileSync(filePath, newFile);
 		});
