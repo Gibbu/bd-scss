@@ -8,33 +8,53 @@ import path from 'path';
 import { log } from './log.js';
 import { osSlash } from './utils.js';
 
-const SRC = path.join(process.cwd(), 'src');
+const SRC_FOLDER = path.join(process.cwd(), 'src');
 const CLASSLIST_URL = 'https://raw.githubusercontent.com/SyndiShanX/Update-Classes/main/Changes.txt';
+const REGEX_CHANGES = 'https://syndishanx.github.io/Update-Classes/Regex_Changes.txt';
+
+const fetchList = async (url: string) => {
+	const req = await fetch(url);
+	return await req.text();
+};
 
 export const reroll = async (): Promise<{ classesChanged: number; filesChanged: string[] }> => {
 	try {
-		const request = await fetch(CLASSLIST_URL);
-		const classList = await request.text();
-		const listLength = classList.split('\n').length - 1;
-		const changesSplit = classList.split('\n');
+		const chanagesList = await fetchList(CLASSLIST_URL);
+		const regexList = await fetchList(REGEX_CHANGES);
+
+		const changesSplit = chanagesList.split('\n');
+		const regexSplit = regexList.split('\n');
+
+		const changesNum = changesSplit.length - 1;
+
 		let classesChanged = 0;
 		let filesChanged: string[] = [];
 
 		function updateFile(file: string) {
-			let i = 0;
-			while (i < listLength) {
-				const oldClass = changesSplit[i].split('\r')[0];
-				const newClass = changesSplit[i + 1].split('\r')[0];
-				if (file.includes(oldClass)) {
-					file = file.replaceAll(oldClass, newClass);
-					classesChanged++;
+			let regexReplaced = false;
+			for (let x = 0; x < regexSplit.length; x++) {
+				if (file.includes(regexSplit[x])) {
+					file = file.replace(/\.([_0-9a-f]{6})[0-9a-f]{10,11}-([A-Za-z0-9_\-]+)/g, '.$2_$1');
+					regexReplaced = true;
 				}
-				i = i + 2;
 			}
+
+			if (!regexReplaced) {
+				let i = 0;
+				while (i < changesNum) {
+					let class1 = changesSplit[i].split('\r')[0];
+					let class2 = changesSplit[i + 1].split('\r')[0];
+
+					file = file.replaceAll(class1, class2);
+
+					i = i + 2;
+				}
+			}
+
 			return file;
 		}
 
-		const allFiles = fs.readdirSync(SRC, { withFileTypes: true, recursive: true }).filter((d) => !d.isDirectory());
+		const allFiles = fs.readdirSync(SRC_FOLDER, { withFileTypes: true, recursive: true }).filter((d) => !d.isDirectory());
 
 		allFiles.forEach((file) => {
 			if (!file.name.startsWith('_')) return;

@@ -63,7 +63,7 @@ cli
 				`Classes rerolled.`,
 				`Duration: ${(endTime - startTime).toFixed()}ms.`,
 				`Files Changed:`,
-				filesChanged.map((el) => '\t - ' + el).join('\n')
+				filesChanged.map((el) => '  - ' + el).join('\n')
 			]);
 		else log.info(['No files were changed.']);
 	});
